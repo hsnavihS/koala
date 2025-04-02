@@ -1,16 +1,16 @@
 #include <iostream>
 
-#include "include/Parser.h"
+#include "include/Driver.h"
 
 using namespace std;
 
 int main(int argc, char **args) {
-  Parser parser;
+  Driver driver;
 
   if (argc == 1) {
-    parser.runPrompt();
+    driver.runPrompt();
   } else if (argc == 2) {
-    parser.runFile(args[1]);
+    driver.runFile(args[1]);
   } else if (argc > 2) {
     cerr << "Usage: " << args[0] << " input_file.kol" << endl;
     exit(1);

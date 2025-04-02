@@ -13,5 +13,7 @@ Token::Token(TokenType type, string lexeme, string literal, int line) {
 }
 
 string Token::toString() {
-  return "Token: " + lexeme + " " + literal + " " + to_string(line);
+  return "Lexeme: " + lexeme + ", {" +
+         "Type: " + tokenTypeToString[static_cast<int>(type)] + ", " +
+         "Line: " + to_string(line) + "}";
 }
