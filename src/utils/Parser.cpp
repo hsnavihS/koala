@@ -48,7 +48,7 @@ vector<Token> Parser::parseTokens() {
       continue;
     // TODO: Handle comments
     case '/':
-      tokens.push_back(Token(TokenType::SLASH, ";", "", line));
+      tokens.push_back(Token(TokenType::SLASH, "/", "", line));
       continue;
     case '*':
       tokens.push_back(Token(TokenType::STAR, "*", "", line));
@@ -133,7 +133,6 @@ Token Parser::parseString(int *i) {
   string buf = "";
   *i = *i + 1; // skip the opening quote
 
-  // NOTE: Multi-line strings
   while (code[*i] != '"') {
     buf += code[*i];
     *i = *i + 1;
