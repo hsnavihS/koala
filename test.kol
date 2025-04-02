@@ -1,2 +1,4 @@
-return 2;
-return 5;
+func test(int a) {
+	a = 5;
+	return a;
+}
