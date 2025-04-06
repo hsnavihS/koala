@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "../../include/ParseError.h"
-#include "../../include/Parser.h"
+#include "error/ParseError.h"
+#include "core/Parser.h"
 
 using namespace std;
 

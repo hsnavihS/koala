@@ -2,11 +2,11 @@
 #include <iostream>
 #include <string>
 
-#include "../../include/AstPrinter.h"
-#include "../../include/Driver.h"
-#include "../../include/Expr.h"
-#include "../../include/Lexer.h"
-#include "../../include/Parser.h"
+#include "core/Driver.h"
+#include "core/Expr.h"
+#include "core/Lexer.h"
+#include "core/Parser.h"
+#include "utils/AstPrinter.h"
 
 using namespace std;
 

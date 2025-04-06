@@ -2,8 +2,8 @@
 #include <string>
 #include <vector>
 
-#include "../../include/Lexer.h"
-#include "../../include/Token.h"
+#include "core/Lexer.h"
+#include "core/Token.h"
 
 using namespace std;
 

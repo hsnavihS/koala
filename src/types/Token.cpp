@@ -2,8 +2,8 @@
 
 #include <any>
 
-#include "../../include/Token.h"
-#include "../../include/TokenType.h"
+#include "core/Token.h"
+#include "core/TokenType.h"
 
 using namespace std;
 
