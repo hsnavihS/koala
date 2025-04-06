@@ -1,8 +1,1 @@
-func test(int a) {
-	a = 5;
-	var b = "this is a string";
-	// this is a comment
-	var c = "this is a 
-					multi-line string";
-	return a;
-}
+3 + 4 - 5 * 6 / "string coz why not"

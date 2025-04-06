@@ -2,8 +2,11 @@
 #include <iostream>
 #include <string>
 
+#include "../../include/AstPrinter.h"
 #include "../../include/Driver.h"
+#include "../../include/Expr.h"
 #include "../../include/Lexer.h"
+#include "../../include/Parser.h"
 
 using namespace std;
 
@@ -25,7 +28,8 @@ void Driver::runFile(char *filename) {
 
   run(fileContents);
 
-  if (hadError) exit(65);
+  if (hadError)
+    exit(65);
 }
 
 void Driver::runPrompt() {
@@ -54,8 +58,10 @@ void Driver::reportError(int line, string where, string message) {
 void Driver::run(string code) {
   Lexer *lexer = new Lexer(code);
   vector<Token> tokens = lexer->generateTokens();
-  
-  for (auto token: tokens) {
-    cout << token.toString() << endl;
-  }
+
+  Parser *parser = new Parser(tokens);
+  Expr *expr = parser->parse();
+  AstPrinter *printer = new AstPrinter();
+
+  cout << printer->print(*expr) << endl;
 }

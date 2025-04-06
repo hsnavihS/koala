@@ -117,6 +117,7 @@ vector<Token> Lexer::generateTokens() {
     }
   }
 
+  tokens.push_back(Token(TokenType::END_OF_FILE, "", "", line));
   return tokens;
 }
 
@@ -126,7 +127,7 @@ Token Lexer::processNumber(int *i) {
     buf += code[*i];
     *i = *i + 1;
   }
-  return Token(TokenType::NUMBER, buf, "", line);
+  return Token(TokenType::NUMBER, buf, stoi(buf), line);
 }
 
 Token Lexer::processString(int *i) {
@@ -141,7 +142,7 @@ Token Lexer::processString(int *i) {
   // NOTE: Unterminated strings
 
   *i = *i + 1; // skip the closing quote
-  return Token(TokenType::STRING, buf, "", line);
+  return Token(TokenType::STRING, buf, buf, line);
 }
 
 Token Lexer::processIdentifier(int *i) {

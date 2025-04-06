@@ -13,6 +13,10 @@ public:
   string toString();
   string getLexeme() { return lexeme; }
 
+  TokenType getType() { return type; }
+  any getLiteral() { return literal; }
+  int getLine() { return line; }
+
 private:
   string lexeme;
   TokenType type;
