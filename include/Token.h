@@ -1,5 +1,6 @@
 #pragma once
 
+#include <any>
 #include <string>
 
 #include "TokenType.h"
@@ -8,12 +9,13 @@ using namespace std;
 
 class Token {
 public:
-  Token(TokenType type, string lexeme, string literal, int line);
+  Token(TokenType type, string lexeme, any literal, int line);
   string toString();
+  string getLexeme() { return lexeme; }
 
 private:
-  TokenType type;
   string lexeme;
-  string literal;
+  TokenType type;
+  any literal;
   int line;
 };
