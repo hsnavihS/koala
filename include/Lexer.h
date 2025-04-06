@@ -9,10 +9,10 @@
 
 using namespace std;
 
-class Parser {
+class Lexer {
 public:
-  Parser(string code) : code(code) {}
-  vector<Token> parseTokens();
+  Lexer(string code) : code(code) {}
+  vector<Token> generateTokens();
 
 private:
   string code;
@@ -20,9 +20,9 @@ private:
   char peek(int i);
   // NOTE: I've completely forgotten how pointers work, maybe
   // revisit this sometime in the future
-  Token parseString(int *i);
-  Token parseIdentifier(int *i);
-  Token parseNumber(int *i);
+  Token processString(int *i);
+  Token processIdentifier(int *i);
+  Token processNumber(int *i);
   unordered_map<string, TokenType> keywords = {
     {"and", TokenType::AND},
     {"class", TokenType::CLASS},

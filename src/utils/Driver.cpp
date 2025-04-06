@@ -3,7 +3,7 @@
 #include <string>
 
 #include "../../include/Driver.h"
-#include "../../include/Parser.h"
+#include "../../include/Lexer.h"
 
 using namespace std;
 
@@ -52,8 +52,8 @@ void Driver::reportError(int line, string where, string message) {
 }
 
 void Driver::run(string code) {
-  Parser *parser = new Parser(code);
-  vector<Token> tokens = parser->parseTokens();
+  Lexer *lexer = new Lexer(code);
+  vector<Token> tokens = lexer->generateTokens();
   
   for (auto token: tokens) {
     cout << token.toString() << endl;

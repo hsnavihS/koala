@@ -2,12 +2,12 @@
 #include <string>
 #include <vector>
 
-#include "../../include/Parser.h"
+#include "../../include/Lexer.h"
 #include "../../include/Token.h"
 
 using namespace std;
 
-vector<Token> Parser::parseTokens() {
+vector<Token> Lexer::generateTokens() {
   vector<Token> tokens;
 
   for (int i = 0; i < code.size(); i++) {
@@ -102,13 +102,13 @@ vector<Token> Parser::parseTokens() {
     // handle strings, literals, numbers, identifiers and errors
     default:
       if (code[i] == '"') {
-        tokens.push_back(parseString(&i));
+        tokens.push_back(processString(&i));
         i--;
       } else if (isalpha(code[i]) || code[i] == '_') {
-        tokens.push_back(parseIdentifier(&i));
+        tokens.push_back(processIdentifier(&i));
         i--;
       } else if (isdigit(code[i])) {
-        tokens.push_back(parseNumber(&i));
+        tokens.push_back(processNumber(&i));
         i--;
       } else {
         cerr << "Error: Unexpected character '" << code[i] << "' at position "
@@ -120,7 +120,7 @@ vector<Token> Parser::parseTokens() {
   return tokens;
 }
 
-Token Parser::parseNumber(int *i) {
+Token Lexer::processNumber(int *i) {
   string buf = "";
   while (isdigit(code[*i])) {
     buf += code[*i];
@@ -129,7 +129,7 @@ Token Parser::parseNumber(int *i) {
   return Token(TokenType::NUMBER, buf, "", line);
 }
 
-Token Parser::parseString(int *i) {
+Token Lexer::processString(int *i) {
   string buf = "";
   *i = *i + 1; // skip the opening quote
 
@@ -144,7 +144,7 @@ Token Parser::parseString(int *i) {
   return Token(TokenType::STRING, buf, "", line);
 }
 
-Token Parser::parseIdentifier(int *i) {
+Token Lexer::processIdentifier(int *i) {
   string buf = "";
   buf.push_back(code[*i]);
   *i = *i + 1;
@@ -163,7 +163,7 @@ Token Parser::parseIdentifier(int *i) {
   }
 }
 
-char Parser::peek(int i) {
+char Lexer::peek(int i) {
   if (i < code.size()) {
     return code[i + 1];
   } else {
