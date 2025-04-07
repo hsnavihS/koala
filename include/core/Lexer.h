@@ -6,23 +6,27 @@
 
 #include "Token.h"
 #include "TokenType.h"
+#include "error/ErrorReporter.h"
 
 using namespace std;
 
 class Lexer {
 public:
-  Lexer(string code) : code(code) {}
+  Lexer(string code, ErrorReporterPtr errorReporter) : code(code), errorReporter(errorReporter) {}
   vector<Token> generateTokens();
 
 private:
   string code;
   int line = 1;
   char peek(int i);
+  ErrorReporterPtr errorReporter;
+
   // NOTE: I've completely forgotten how pointers work, maybe
   // revisit this sometime in the future
   Token processString(int *i);
   Token processIdentifier(int *i);
   Token processNumber(int *i);
+
   unordered_map<string, TokenType> keywords = {
     {"and", TokenType::AND},
     {"class", TokenType::CLASS},

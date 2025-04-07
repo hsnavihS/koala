@@ -3,18 +3,21 @@
 #include <vector>
 
 #include "Expr.h"
-#include "error/ParseError.h"
 #include "Token.h"
 #include "TokenType.h"
+#include "error/ErrorReporter.h"
+#include "error/ParserError.h"
 
 class Parser {
 public:
-  Parser(vector<Token> tokens) : tokens(tokens) {}
+  Parser(vector<Token> tokens, ErrorReporterPtr errorReporter)
+      : tokens(tokens), errorReporter(errorReporter) {}
   Expr *parse();
 
 private:
-  vector<Token> tokens;
   int current = 0;
+  vector<Token> tokens;
+  ErrorReporterPtr errorReporter;
 
   /**
    * expression -> equality ;
@@ -39,7 +42,7 @@ private:
   bool isAtEnd();
 
   Token *previous();
-  ParseError error(Token token, string message);
+  ParserError error(Token token, string message);
 
   void consume(TokenType type, string message);
   void advance();

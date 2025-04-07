@@ -2,16 +2,18 @@
 
 #include <string>
 
+#include "error/ErrorReporter.h"
+
 using namespace std;
 
 class Driver {
 public:
-  Driver();
+  Driver(ErrorReporterPtr errorReporter) : errorReporter(errorReporter) {}
   void runPrompt();
   void runFile(char *filename);
   void reportError(int line, string where, string message);
 
 private:
-  bool hadError = false;
   void run(string code);
+  ErrorReporterPtr errorReporter;
 };

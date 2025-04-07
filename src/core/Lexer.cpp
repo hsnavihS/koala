@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -111,8 +110,8 @@ vector<Token> Lexer::generateTokens() {
         tokens.push_back(processNumber(&i));
         i--;
       } else {
-        cerr << "Error: Unexpected character '" << code[i] << "' at position "
-             << i << endl;
+        errorReporter->report(line, "Unexpected character: '" +
+                                        string(1, code[i]) + "'");
       }
     }
   }

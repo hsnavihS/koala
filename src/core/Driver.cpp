@@ -10,12 +10,10 @@
 
 using namespace std;
 
-Driver::Driver() {}
-
 void Driver::runFile(char *filename) {
   ifstream file(filename);
   if (!file.is_open()) {
-    cerr << "Error: Could not open file " << filename << endl;
+    errorReporter->report(0, "Could not open file: " + string(filename));
     exit(1);
   }
 
@@ -28,7 +26,7 @@ void Driver::runFile(char *filename) {
 
   run(fileContents);
 
-  if (hadError)
+  if (errorReporter->errorDetected())
     exit(65);
 }
 
@@ -40,28 +38,28 @@ void Driver::runPrompt() {
     getline(cin, line);
 
     if (line == "exit" || line == "quit" || line.empty()) {
+      cout << "Received '" << line << "'" << endl;
       break;
     }
 
     run(line);
 
     // NOTE: Need to reset the flag after every prompt in REPL mode
-    hadError = false;
+    errorReporter->reset();
   }
 }
 
-void Driver::reportError(int line, string where, string message) {
-  cerr << "[line " << line << "] Error" << where << ": " << message << endl;
-  hadError = true;
-}
-
 void Driver::run(string code) {
-  Lexer *lexer = new Lexer(code);
+  Lexer *lexer = new Lexer(code, errorReporter);
   vector<Token> tokens = lexer->generateTokens();
 
-  Parser *parser = new Parser(tokens);
+  Parser *parser = new Parser(tokens, errorReporter);
   Expr *expr = parser->parse();
   AstPrinter *printer = new AstPrinter();
+
+  if (errorReporter->errorDetected()) {
+    return;
+  }
 
   cout << printer->print(*expr) << endl;
 }

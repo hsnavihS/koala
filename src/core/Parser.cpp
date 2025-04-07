@@ -1,6 +1,4 @@
-#include <iostream>
-
-#include "error/ParseError.h"
+#include "error/ParserError.h"
 #include "core/Parser.h"
 
 using namespace std;
@@ -8,7 +6,7 @@ using namespace std;
 Expr *Parser::parse() {
   try {
     return expression();
-  } catch (ParseError &error) {
+  } catch (ParserError &error) {
     return nullptr;
   }
 }
@@ -103,11 +101,11 @@ Expr *Parser::primary() {
   // group
   if (match({TokenType::LEFT_PARENTHESIS})) {
     Expr *expr = expression();
-    consume(TokenType::RIGHT_PARENTHESIS, "Expect ')' after expression.");
+    consume(TokenType::RIGHT_PARENTHESIS, "Expected ')'");
     return new Grouping(expr);
   }
 
-  throw error(tokens.at(current), "Expected expression");
+  throw error(tokens.at(current), "Expected an expression");
 }
 
 bool Parser::match(initializer_list<TokenType> types) {
@@ -138,8 +136,7 @@ void Parser::consume(TokenType type, string message) {
     return;
   }
 
-  cerr << "Error: " << message << endl;
-  throw runtime_error("Error: " + message);
+  throw error(tokens.at(current), message);
 }
 
 void Parser::advance() {
@@ -147,9 +144,9 @@ void Parser::advance() {
     current++;
 }
 
-ParseError Parser::error(Token token, string message) {
-  cerr << "[line " << token.getLine() << "] Error" << ": " << message << endl;
-  return ParseError(message);
+ParserError Parser::error(Token token, string message) {
+  errorReporter->report(token.getLine(), message);
+  return ParserError(message);
 }
 
 void Parser::synchronize() {
