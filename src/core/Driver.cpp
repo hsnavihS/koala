@@ -13,7 +13,7 @@ using namespace std;
 void Driver::runFile(char *filename) {
   ifstream file(filename);
   if (!file.is_open()) {
-    errorReporter->report(0, "Could not open file: " + string(filename));
+    errorReporter->report(0, 0, "Could not open file: " + string(filename));
     exit(1);
   }
 
@@ -50,6 +50,8 @@ void Driver::runPrompt() {
 }
 
 void Driver::run(string code) {
+  errorReporter->setCode(code);
+
   Lexer *lexer = new Lexer(code, errorReporter);
   vector<Token> tokens = lexer->generateTokens();
 

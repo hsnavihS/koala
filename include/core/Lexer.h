@@ -18,6 +18,7 @@ public:
 private:
   string code;
   int line = 1;
+  int column = 0;
   char peek(int i);
   ErrorReporterPtr errorReporter;
 

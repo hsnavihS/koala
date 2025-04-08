@@ -100,12 +100,13 @@ Expr *Parser::primary() {
 
   // group
   if (match({TokenType::LEFT_PARENTHESIS})) {
+    Token *startingToken = previous();
     Expr *expr = expression();
-    consume(TokenType::RIGHT_PARENTHESIS, "Expected ')'");
+    consume(TokenType::RIGHT_PARENTHESIS, startingToken, "No matching parenthesis found");
     return new Grouping(expr);
   }
 
-  throw error(tokens.at(current), "Expected an expression");
+  throw error(&tokens.at(current), "Expected an expression");
 }
 
 bool Parser::match(initializer_list<TokenType> types) {
@@ -130,13 +131,13 @@ bool Parser::isAtEnd() {
 
 Token *Parser::previous() { return &tokens.at(current - 1); }
 
-void Parser::consume(TokenType type, string message) {
+void Parser::consume(TokenType type, Token *startingToken, string message) {
   if (check(type)) {
     advance();
     return;
   }
 
-  throw error(tokens.at(current), message);
+  throw error(startingToken, message);
 }
 
 void Parser::advance() {
@@ -144,8 +145,8 @@ void Parser::advance() {
     current++;
 }
 
-ParserError Parser::error(Token token, string message) {
-  errorReporter->report(token.getLine(), message);
+ParserError Parser::error(Token *token, string message) {
+  errorReporter->report(token->getLine(), token->getColumn(), message);
   return ParserError(message);
 }
 

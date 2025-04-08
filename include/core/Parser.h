@@ -42,9 +42,9 @@ private:
   bool isAtEnd();
 
   Token *previous();
-  ParserError error(Token token, string message);
+  ParserError error(Token *token, string message);
 
-  void consume(TokenType type, string message);
+  void consume(TokenType type, Token *startingToken, string message);
   void advance();
   void synchronize();
 };

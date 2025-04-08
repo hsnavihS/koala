@@ -8,8 +8,8 @@ using namespace std;
 
 int main() {
   Expr *expression = new Binary(
-      new Unary(new Token(TokenType::MINUS, "-", nullptr, 1), new Literal(123)),
-      new Token(TokenType::STAR, "*", nullptr, 1),
+      new Unary(new Token(TokenType::MINUS, "-", nullptr, 1, 1), new Literal(123)),
+      new Token(TokenType::STAR, "*", nullptr, 1, 2),
       new Grouping(new Literal(nullptr)));
 
   AstPrinter printer;
