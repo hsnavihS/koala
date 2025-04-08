@@ -24,7 +24,7 @@ void Driver::runFile(char *filename) {
     fileContents += line + "\n";
   }
 
-  run(fileContents);
+  run(fileContents, filename);
 
   if (errorReporter->errorDetected())
     exit(65);
@@ -49,8 +49,8 @@ void Driver::runPrompt() {
   }
 }
 
-void Driver::run(string code) {
-  errorReporter->setCode(code);
+void Driver::run(string code, string filename) {
+  errorReporter->setupErrorReporter(code, filename);
 
   Lexer *lexer = new Lexer(code, errorReporter);
   vector<Token> tokens = lexer->generateTokens();
