@@ -1,14 +1,37 @@
-#include "error/ParserError.h"
 #include "core/Parser.h"
+#include "core/Stmt.h"
+#include "error/ParserError.h"
 
 using namespace std;
 
-Expr *Parser::parse() {
-  try {
-    return expression();
-  } catch (ParserError &error) {
-    return nullptr;
+vector<Stmt*> *Parser::parse() {
+  vector<Stmt*> *statements = new vector<Stmt*>;
+
+  while (!isAtEnd()) {
+    statements->push_back(statement());
   }
+
+  return statements;
+}
+
+Stmt *Parser::statement() {
+  if (match({TokenType::PRINT})) {
+    return printStatement();
+  }
+
+  return expressionStatement();
+}
+
+Stmt *Parser::printStatement() {
+  Expr *value = expression();
+  consume(TokenType::SEMICOLON, previous(), "Expected ';'");
+  return new Print(value);
+}
+
+Stmt *Parser::expressionStatement() {
+  Expr *value = expression();
+  consume(TokenType::SEMICOLON, previous(), "Expected ';'");
+  return new Expression(value);
 }
 
 Expr *Parser::expression() { return equality(); }
@@ -102,7 +125,8 @@ Expr *Parser::primary() {
   if (match({TokenType::LEFT_PARENTHESIS})) {
     Token *startingToken = previous();
     Expr *expr = expression();
-    consume(TokenType::RIGHT_PARENTHESIS, startingToken, "No matching parenthesis found");
+    consume(TokenType::RIGHT_PARENTHESIS, startingToken,
+            "No matching parenthesis found");
     return new Grouping(expr);
   }
 

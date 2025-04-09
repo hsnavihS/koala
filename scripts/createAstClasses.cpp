@@ -1,3 +1,4 @@
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -7,11 +8,16 @@
 
 using namespace std;
 
-const unordered_map<string, vector<string>> AST_CLASSES = {
+const unordered_map<string, vector<string>> EXPR_CLASSES = {
     {"Binary", {"Expr left", "Token op", "Expr right"}},
     {"Grouping", {"Expr expression"}},
-    {"Literal", {"string value"}},
+    {"Literal", {"any value"}},
     {"Unary", {"Token op", "Expr right"}},
+};
+
+const unordered_map<string, vector<string>> STMT_CLASSES = {
+    {"Expression", {"Expr expression"}},
+    {"Print", {"Expr expression"}},
 };
 
 void split(string s, vector<string> *result, string delimiter) {
@@ -40,28 +46,42 @@ void splitClassMembers(vector<string> classMembers, vector<string> parts,
   }
 }
 
-void writeVisitorMethod(ofstream &file, string className) {
+void writeVisitorMethod(ofstream &file, string className, string filename) {
   file << "std::any accept(Visitor &visitor) override {\n";
-  file << "  return visitor.visit" << className << "Expr(this);\n";
+  file << "  return visitor.visit" << className << filename << "(this);\n";
   file << "}\n\n";
 }
 
+void writeExprSpecificImports(ofstream &file) {
+  file << "#include \"Token.h\"\n" << endl;
+}
+
+void writeStmtSpecificImports(ofstream &file) {
+  file << "#include \"Expr.h\"\n" << endl;
+}
+
 // NOTE: Not very elegant, can be much more memory efficient, but it works
-void writeToHeaderFile(ofstream &file) {
+void writeToHeaderFile(ofstream &file, unordered_map<string, vector<string>> &classes, string filename) {
   // header guard and import(s)
   file << "#pragma once\n" << endl;
   file << "#include <any>\n" << endl;
-  file << "#include \"Token.h\"" << endl;
-  file << "#include \"Visitor.h\"\n" << endl;
+  file << "#include \"Visitor.h\"" << endl;
+
+  // write the specific imports
+  if (strcmp(filename.c_str(), "Expr") == 0) {
+    writeExprSpecificImports(file);
+  } else if (strcmp(filename.c_str(), "Stmt") == 0) {
+    writeStmtSpecificImports(file);
+  }
 
   // the base class
-  file << "class Expr {" << endl;
+  file << "class " << filename << " {" << endl;
   file << "public:\n";
   file << "  virtual std::any accept(Visitor &visitor) = 0;\n" << endl;
   file << "};\n" << endl;
 
   // the derived classes
-  for (auto &astClass : AST_CLASSES) {
+  for (auto &astClass : classes) {
     string className = astClass.first;
     vector<string> classMembers = astClass.second;
     vector<pair<string, string>> members = {};
@@ -71,7 +91,7 @@ void writeToHeaderFile(ofstream &file) {
     splitClassMembers(classMembers, parts, members);
 
     // class name
-    file << "class " << className << " : public Expr {\n";
+    file << "class " << className << " : public " << filename << " {\n";
 
     // constructor
     file << "public:\n";
@@ -99,10 +119,9 @@ void writeToHeaderFile(ofstream &file) {
     file << " {}\n\n";
 
     // write the visitor method
-    writeVisitorMethod(file, className);
+    writeVisitorMethod(file, className, filename);
 
     // define members
-    file << "private:\n";
     for (auto &member : members) {
       file << member.first << " *" << member.second << ";\n";
     }
@@ -116,14 +135,16 @@ int main(int argc, char **argv) {
     return 1;
   }
 
+  string filename = argv[1];
   string currentPath = filesystem::current_path().string();
   currentPath = currentPath.substr(0, currentPath.rfind("/"));
-  string path = currentPath + "/include/" + argv[1] + ".h";
+  string path = currentPath + "/include/core/" + filename + ".h";
+  auto classes = strcmp(filename.c_str(), "Expr") == 0 ? EXPR_CLASSES : STMT_CLASSES;
 
   ofstream file(path);
 
   if (file.is_open()) {
-    writeToHeaderFile(file);
+    writeToHeaderFile(file, classes, argv[1]);
     file.close();
   } else {
     cerr << "Error: Could not open file " << path << endl;

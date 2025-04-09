@@ -3,11 +3,9 @@
 #include <string>
 
 #include "core/Driver.h"
-#include "core/Expr.h"
 #include "core/Interpreter.h"
 #include "core/Lexer.h"
 #include "core/Parser.h"
-#include "utils/AstPrinter.h"
 
 using namespace std;
 
@@ -59,28 +57,12 @@ void Driver::run(string code, string filename) {
   vector<Token> tokens = lexer->generateTokens();
 
   Parser *parser = new Parser(tokens, errorReporter);
-  Expr *expr = parser->parse();
-  AstPrinter *printer = new AstPrinter();
+  vector<Stmt*> *statements = parser->parse();
 
   if (errorReporter->errorDetected()) {
     return;
   }
 
   static Interpreter *interpreter = new Interpreter(errorReporter);
-  any value = interpreter->interpret(expr);
-  printValue(value);
-}
-
-void Driver::printValue(any value) {
-  // NOTE: Currently only int works, maybe extend this to support double, long
-  // and long long as well?
-  if (value.type() == typeid(int)) {
-    cout << any_cast<int>(value) << endl;
-  } else if (value.type() == typeid(string)) {
-    cout << any_cast<string>(value) << endl;
-  } else if (value.type() == typeid(bool)) {
-    cout << (any_cast<bool>(value) ? "true" : "false") << endl;
-  } else if (value.type() == typeid(nullptr_t)) {
-    cout << "nil" << endl;
-  }
+  interpreter->interpret(statements);
 }

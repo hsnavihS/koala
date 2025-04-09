@@ -5,6 +5,7 @@
 #include "Expr.h"
 #include "Token.h"
 #include "TokenType.h"
+#include "core/Stmt.h"
 #include "error/ErrorReporter.h"
 #include "error/ParserError.h"
 
@@ -12,7 +13,7 @@ class Parser {
 public:
   Parser(vector<Token> tokens, ErrorReporterPtr errorReporter)
       : tokens(tokens), errorReporter(errorReporter) {}
-  Expr *parse();
+  vector<Stmt*> *parse();
 
 private:
   int current = 0;
@@ -26,8 +27,7 @@ private:
    * term -> factor ( ( "-" | "+" ) factor )* ;
    * factor -> unary ( ( "/" | "*" ) unary )* ;
    * unary -> ( "!" | "-" ) unary | primary ;
-   * primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")"
-   * ;
+   * primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
    */
   Expr *expression();
   Expr *equality();
@@ -36,6 +36,10 @@ private:
   Expr *factor();
   Expr *unary();
   Expr *primary();
+
+  Stmt *statement();
+  Stmt *printStatement();
+  Stmt *expressionStatement();
 
   bool match(std::initializer_list<TokenType> types);
   bool check(TokenType type);

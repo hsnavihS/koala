@@ -1,28 +1,39 @@
 #include <any>
 
+#include <iostream>
+
 #include "core/Interpreter.h"
 #include "error/RuntimeError.h"
 
 using namespace std;
 
-any Interpreter::interpret(Expr *expr) {
+void Interpreter::interpret(vector<Stmt*> *statements) {
   try {
-    return expr->accept(*this);
-  } catch (const RuntimeError &e) {
-    errorReporter->reportRuntimeError(e.getLineNumber(), e.getColumnNumber(),
-                                      e.what());
+    for (auto &statement : *statements) {
+      execute(statement);
+    }
+  } catch (const RuntimeError &error) {
+    errorReporter->reportRuntimeError(error.getLineNumber(), error.getColumnNumber(),
+                                      error.what());
   }
-  return nullptr;
+}
+
+void Interpreter::execute(Stmt *stmt) {
+  stmt->accept(*this);
+}
+
+any Interpreter::evaluate(Expr *expr) {
+  return expr->accept(*this);
 }
 
 any Interpreter::visitLiteralExpr(Literal *expr) { return expr->value; }
 
 any Interpreter::visitGroupingExpr(Grouping *expr) {
-  return interpret(expr->expression);
+  return evaluate(expr->expression);
 }
 
 any Interpreter::visitUnaryExpr(Unary *expr) {
-  any right = interpret(expr->right);
+  any right = evaluate(expr->right);
 
   switch (expr->op->getType()) {
   case TokenType::MINUS:
@@ -41,8 +52,8 @@ any Interpreter::visitUnaryExpr(Unary *expr) {
 }
 
 any Interpreter::visitBinaryExpr(Binary *expr) {
-  any left = interpret(expr->left);
-  any right = interpret(expr->right);
+  any left = evaluate(expr->left);
+  any right = evaluate(expr->right);
 
   switch (expr->op->getType()) {
   case TokenType::MINUS:
@@ -115,10 +126,35 @@ bool Interpreter::areEqual(std::any left, std::any right) {
   return false;
 }
 
+any Interpreter::visitPrintStmt(Print *print) {
+  any value = evaluate(print->expression);
+  printValue(value);
+  return value;
+}
+
+any Interpreter::visitExpressionStmt(Expression *stmt) {
+  evaluate(stmt->expression);
+  return nullptr;
+}
+
 void Interpreter::validateNumberOperands(Token *token, any left, any right) {
   if (left.type() == typeid(int) && right.type() == typeid(int))
     return;
 
   throw RuntimeError("Operands must be numbers", token->getLine(),
                      token->getColumn());
+}
+
+void Interpreter::printValue(any value) {
+  // NOTE: Currently only int works, maybe extend this to support double, long
+  // and long long as well?
+  if (value.type() == typeid(int)) {
+    cout << any_cast<int>(value) << endl;
+  } else if (value.type() == typeid(string)) {
+    cout << any_cast<string>(value) << endl;
+  } else if (value.type() == typeid(bool)) {
+    cout << (any_cast<bool>(value) ? "true" : "false") << endl;
+  } else if (value.type() == typeid(nullptr_t)) {
+    cout << "nil" << endl;
+  }
 }
