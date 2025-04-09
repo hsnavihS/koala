@@ -1,5 +1,6 @@
 #pragma once
 
+#include <any>
 #include <string>
 
 #include "error/ErrorReporter.h"
@@ -16,4 +17,5 @@ public:
 private:
   void run(string code, string filename = "");
   ErrorReporterPtr errorReporter;
+  void printValue(any value);
 };
