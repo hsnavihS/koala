@@ -60,7 +60,32 @@ Stmt *Parser::expressionStatement() {
   return new Expression(value);
 }
 
-Expr *Parser::expression() { return equality(); }
+Expr *Parser::expression() { return assignment(); }
+
+Expr *Parser::assignment() {
+  Expr *expr = equality();
+
+  if (match({TokenType::EQUAL})) {
+    Token *equals = previous();
+    Expr *value = assignment();
+
+    // dynamic casting in C++ is the equivalent of using 'instanceof' in Java
+    if (Expr *var = dynamic_cast<Variable *>(expr)) {
+      Variable *variable = static_cast<Variable *>(var);
+      Token *name = variable->name;
+      return new Assign(name, value);
+    }
+
+    error(equals, "Invalid assignment target");
+  }
+
+  /**
+   * Because assignments can be printed as well:
+   *   var a = 1;
+   *   print a = 2; // this should work
+   */
+  return expr;
+}
 
 Expr *Parser::equality() {
   // LHS

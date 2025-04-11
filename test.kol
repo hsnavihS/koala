@@ -5,9 +5,12 @@ print true;
 
 var a = 5;
 var b = 6;
-print "Value of a + b (original): ";
+print "Value of a + b (original):";
 print a + b;
 var a = 10;
-var b = 12;
-print "Value of a + b (new): ";
+b = 12;
+print "Value of a + b (new):";
 print a + b;
+
+print "Reassigning and printing:";
+print b = 69;

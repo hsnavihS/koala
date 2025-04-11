@@ -68,3 +68,15 @@ public:
   Token *op;
   Expr *right;
 };
+
+class Assign : public Expr {
+public:
+  Assign(Token *name, Expr *value) : name(name), value(value) {}
+
+  std::any accept(Visitor &visitor) override {
+    return visitor.visitAssignExpr(this);
+  }
+
+  Token *name;
+  Expr *value;
+};

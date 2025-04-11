@@ -9,6 +9,7 @@
 using namespace std;
 
 const unordered_map<string, vector<string>> EXPR_CLASSES = {
+    {"Assign", {"Token name", "Expr value"}},
     {"Binary", {"Expr left", "Token op", "Expr right"}},
     {"Grouping", {"Expr expression"}},
     {"Literal", {"any value"}},

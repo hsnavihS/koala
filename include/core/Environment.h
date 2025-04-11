@@ -1,7 +1,6 @@
 #pragma once
 
 #include <any>
-#include <stdexcept>
 #include <string>
 #include <unordered_map>
 
@@ -18,13 +17,9 @@ public:
    */
   void define(const string &name, const any &value) { values[name] = value; }
 
-  any get(Token *name) {
-    if (values.find(name->getLexeme()) != values.end()) {
-      return values[name->getLexeme()];
-    }
+  void assign(const string &name, const any &value);
 
-    throw new runtime_error("Undefined variable '" + name->getLexeme() + "'");
-  }
+  any get(Token *name);
 
 private:
   unordered_map<string, any> values = {};

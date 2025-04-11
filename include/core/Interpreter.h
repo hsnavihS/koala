@@ -28,6 +28,7 @@ private:
   any visitGroupingExpr(Grouping *expr);
   any visitUnaryExpr(Unary *expr);
   any visitVariableExpr(Variable *expr);
+  any visitAssignExpr(Assign *expr);
 
   any visitVarStmt(Var *stmt);
   any visitPrintStmt(Print *stmt);

@@ -37,6 +37,7 @@ private:
   Expr *factor();
   Expr *unary();
   Expr *primary();
+  Expr *assignment();
 
   Stmt *statement();
   Stmt *declaration();

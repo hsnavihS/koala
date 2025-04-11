@@ -97,6 +97,12 @@ any Interpreter::visitVariableExpr(Variable *expr) {
   return environment->get(expr->name);
 }
 
+any Interpreter::visitAssignExpr(Assign *expr) {
+  any value = evaluate(expr->value);
+  environment->assign(expr->name->getLexeme(), value);
+  return value;
+}
+
 any Interpreter::visitPrintStmt(Print *print) {
   any value = evaluate(print->expression);
   printValue(value);
