@@ -4,3 +4,10 @@ Build/**
 
 # Ignore clangd cache
 .cache/**
+
+# Ignore all object files
+*.out
+*.o
+
+# Ignore known script binaries
+createAstClasses
