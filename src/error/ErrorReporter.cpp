@@ -24,18 +24,30 @@ void ErrorReporter::setupErrorReporter(const string code,
 
 void ErrorReporter::printError(const int line, const int column,
                                const string message, bool isRuntimeError) {
+  // Check to see if we can print the preceding line for context
+  bool canPrintPrecedingLine = line > 1;
+
+  // Print the type of error and the error message
   if (isRuntimeError) {
     cerr << "     Runtime Error: " << "\033[1;31m" << message << "\033[0m\n";
   } else {
     cerr << "     Error: " << "\033[1;31m" << message << "\033[0m\n";
   }
 
+  // Print filename if not running in the REPL
   if (filename != "") {
-    cerr << "       --> " << filename << ":" << line << ":" << column << "\n";
+    cerr << "       --> " << filename << ":" << line << ":" << column << "\n"
+         << "       |" << "\n";
   }
 
-  cerr << "       |" << "\n"
-       << "     " << line << " | " << "\033[31m" << lines[line - 1]
+  // Print the preceding line if we can
+  if (canPrintPrecedingLine) {
+    cerr << "     " << line - 1 << " | " << "\033[1;30m" << lines[line - 2]
+         << "\033[0m\n";
+  }
+
+  // Print the line of code where the error occurred
+  cerr << "     " << line << " | " << "\033[31m" << lines[line - 1]
        << "\033[0m\n"
        << "       | " << string(column - 1, ' ') << "^" << "\n";
 }
