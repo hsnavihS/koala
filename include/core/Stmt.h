@@ -21,6 +21,18 @@ public:
   Expr *expression;
 };
 
+class Var : public Stmt {
+public:
+  Var(Token *name, Expr *initializer) : name(name), initializer(initializer) {}
+
+  std::any accept(Visitor &visitor) override {
+    return visitor.visitVarStmt(this);
+  }
+
+  Token *name;
+  Expr *initializer;
+};
+
 class Expression : public Stmt {
 public:
   Expression(Expr *expression) : expression(expression) {}

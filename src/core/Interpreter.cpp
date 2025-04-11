@@ -7,24 +7,20 @@
 
 using namespace std;
 
-void Interpreter::interpret(vector<Stmt*> *statements) {
+void Interpreter::interpret(vector<Stmt *> *statements) {
   try {
     for (auto &statement : *statements) {
       execute(statement);
     }
   } catch (const RuntimeError &error) {
-    errorReporter->reportRuntimeError(error.getLineNumber(), error.getColumnNumber(),
-                                      error.what());
+    errorReporter->reportRuntimeError(error.getLineNumber(),
+                                      error.getColumnNumber(), error.what());
   }
 }
 
-void Interpreter::execute(Stmt *stmt) {
-  stmt->accept(*this);
-}
+void Interpreter::execute(Stmt *stmt) { stmt->accept(*this); }
 
-any Interpreter::evaluate(Expr *expr) {
-  return expr->accept(*this);
-}
+any Interpreter::evaluate(Expr *expr) { return expr->accept(*this); }
 
 any Interpreter::visitLiteralExpr(Literal *expr) { return expr->value; }
 
@@ -97,7 +93,39 @@ any Interpreter::visitBinaryExpr(Binary *expr) {
   return nullptr;
 }
 
-// Only false, nil and 0 are false
+any Interpreter::visitVariableExpr(Variable *expr) {
+  return environment->get(expr->name);
+}
+
+any Interpreter::visitPrintStmt(Print *print) {
+  any value = evaluate(print->expression);
+  printValue(value);
+  return value;
+}
+
+any Interpreter::visitExpressionStmt(Expression *stmt) {
+  evaluate(stmt->expression);
+  return nullptr;
+}
+
+/**
+ * If a variable hasn't explicitly been initialized, we'll set it to nil
+ */
+any Interpreter::visitVarStmt(Var *stmt) {
+  any value = nullptr;
+  if (stmt->initializer != nullptr) {
+    value = evaluate(stmt->initializer);
+  }
+
+  environment->define(stmt->name->getLexeme(), value);
+  return nullptr;
+}
+
+/** Helpers **/
+
+/**
+ * Only false, nil and 0 are false
+ */
 bool Interpreter::isTrue(any value) {
   if (value.type() == typeid(nullptr_t))
     return false;
@@ -124,17 +152,6 @@ bool Interpreter::areEqual(std::any left, std::any right) {
     return true;
 
   return false;
-}
-
-any Interpreter::visitPrintStmt(Print *print) {
-  any value = evaluate(print->expression);
-  printValue(value);
-  return value;
-}
-
-any Interpreter::visitExpressionStmt(Expression *stmt) {
-  evaluate(stmt->expression);
-  return nullptr;
 }
 
 void Interpreter::validateNumberOperands(Token *token, any left, any right) {

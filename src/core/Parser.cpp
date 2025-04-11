@@ -4,14 +4,40 @@
 
 using namespace std;
 
-vector<Stmt*> *Parser::parse() {
-  vector<Stmt*> *statements = new vector<Stmt*>;
+vector<Stmt *> *Parser::parse() {
+  vector<Stmt *> *statements = new vector<Stmt *>;
 
   while (!isAtEnd()) {
-    statements->push_back(statement());
+    statements->push_back(declaration());
   }
 
   return statements;
+}
+
+Stmt *Parser::declaration() {
+  try {
+    if (match({TokenType::VAR})) {
+      return varDeclaration();
+    }
+    return statement();
+  } catch (ParserError &error) {
+    synchronize();
+  }
+  return nullptr;
+}
+
+Stmt *Parser::varDeclaration() {
+  Token *name =
+      consume(TokenType::IDENTIFIER, previous(), "Expected variable name");
+
+  Expr *initializer = nullptr;
+  if (match({TokenType::EQUAL})) {
+    initializer = expression();
+  }
+
+  consume(TokenType::SEMICOLON, previous(),
+          "Expected ';' after variable declaration");
+  return new Var(name, initializer);
 }
 
 Stmt *Parser::statement() {
@@ -130,6 +156,11 @@ Expr *Parser::primary() {
     return new Grouping(expr);
   }
 
+  // variable
+  if (match({TokenType::IDENTIFIER})) {
+    return new Variable(previous());
+  }
+
   throw error(&tokens.at(current), "Expected an expression");
 }
 
@@ -155,18 +186,17 @@ bool Parser::isAtEnd() {
 
 Token *Parser::previous() { return &tokens.at(current - 1); }
 
-void Parser::consume(TokenType type, Token *startingToken, string message) {
+Token *Parser::consume(TokenType type, Token *startingToken, string message) {
   if (check(type)) {
-    advance();
-    return;
+    return advance();
   }
-
   throw error(startingToken, message);
 }
 
-void Parser::advance() {
+Token *Parser::advance() {
   if (!isAtEnd())
     current++;
+  return previous();
 }
 
 ParserError Parser::error(Token *token, string message) {

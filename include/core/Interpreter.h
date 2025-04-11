@@ -5,6 +5,7 @@
 #include "Expr.h"
 #include "Stmt.h"
 #include "Visitor.h"
+#include "core/Environment.h"
 #include "error/ErrorReporter.h"
 
 using namespace std;
@@ -12,10 +13,12 @@ using namespace std;
 class Interpreter : public Visitor {
 public:
   Interpreter(ErrorReporterPtr errorReporter) : errorReporter(errorReporter) {};
-  void interpret(vector<Stmt*> *statements);
+  void interpret(vector<Stmt *> *statements);
 
 private:
   ErrorReporterPtr errorReporter;
+  Environment *environment = new Environment();
+
   any evaluate(Expr *expr);
   void execute(Stmt *stmt);
   void printValue(any value);
@@ -24,7 +27,9 @@ private:
   any visitBinaryExpr(Binary *expr);
   any visitGroupingExpr(Grouping *expr);
   any visitUnaryExpr(Unary *expr);
+  any visitVariableExpr(Variable *expr);
 
+  any visitVarStmt(Var *stmt);
   any visitPrintStmt(Print *stmt);
   any visitExpressionStmt(Expression *stmt);
 

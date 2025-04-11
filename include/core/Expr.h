@@ -33,6 +33,17 @@ public:
   Expr *expression;
 };
 
+class Variable : public Expr {
+public:
+  Variable(Token *name) : name(name) {}
+
+  std::any accept(Visitor &visitor) override {
+    return visitor.visitVariableExpr(this);
+  }
+
+  Token *name;
+};
+
 class Literal : public Expr {
 public:
   Literal(any value) : value(value) {}

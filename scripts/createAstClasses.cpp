@@ -13,11 +13,13 @@ const unordered_map<string, vector<string>> EXPR_CLASSES = {
     {"Grouping", {"Expr expression"}},
     {"Literal", {"any value"}},
     {"Unary", {"Token op", "Expr right"}},
+    {"Variable", {"Token name"}},
 };
 
 const unordered_map<string, vector<string>> STMT_CLASSES = {
     {"Expression", {"Expr expression"}},
     {"Print", {"Expr expression"}},
+    {"Var", {"Token name", "Expr initializer"}},
 };
 
 void split(string s, vector<string> *result, string delimiter) {
@@ -61,7 +63,9 @@ void writeStmtSpecificImports(ofstream &file) {
 }
 
 // NOTE: Not very elegant, can be much more memory efficient, but it works
-void writeToHeaderFile(ofstream &file, unordered_map<string, vector<string>> &classes, string filename) {
+void writeToHeaderFile(ofstream &file,
+                       unordered_map<string, vector<string>> &classes,
+                       string filename) {
   // header guard and import(s)
   file << "#pragma once\n" << endl;
   file << "#include <any>\n" << endl;
@@ -99,7 +103,8 @@ void writeToHeaderFile(ofstream &file, unordered_map<string, vector<string>> &cl
 
     // write the constructor parameters
     for (int i = 0; i < members.size(); ++i) {
-      file << members[i].first << " *" << members[i].second;
+      file << members[i].first << (className == "Literal" ? " " : " *")
+           << members[i].second;
       if (i < members.size() - 1) {
         file << ", ";
       }
@@ -123,7 +128,8 @@ void writeToHeaderFile(ofstream &file, unordered_map<string, vector<string>> &cl
 
     // define members
     for (auto &member : members) {
-      file << member.first << " *" << member.second << ";\n";
+      file << member.first << (className == "Literal" ? " " : " *")
+           << member.second << ";\n";
     }
     file << "};\n\n";
   }
@@ -139,7 +145,8 @@ int main(int argc, char **argv) {
   string currentPath = filesystem::current_path().string();
   currentPath = currentPath.substr(0, currentPath.rfind("/"));
   string path = currentPath + "/include/core/" + filename + ".h";
-  auto classes = strcmp(filename.c_str(), "Expr") == 0 ? EXPR_CLASSES : STMT_CLASSES;
+  auto classes =
+      strcmp(filename.c_str(), "Expr") == 0 ? EXPR_CLASSES : STMT_CLASSES;
 
   ofstream file(path);
 

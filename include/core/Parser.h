@@ -13,7 +13,7 @@ class Parser {
 public:
   Parser(vector<Token> tokens, ErrorReporterPtr errorReporter)
       : tokens(tokens), errorReporter(errorReporter) {}
-  vector<Stmt*> *parse();
+  vector<Stmt *> *parse();
 
 private:
   int current = 0;
@@ -27,7 +27,8 @@ private:
    * term -> factor ( ( "-" | "+" ) factor )* ;
    * factor -> unary ( ( "/" | "*" ) unary )* ;
    * unary -> ( "!" | "-" ) unary | primary ;
-   * primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
+   * primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")"
+   * ;
    */
   Expr *expression();
   Expr *equality();
@@ -38,17 +39,19 @@ private:
   Expr *primary();
 
   Stmt *statement();
+  Stmt *declaration();
+  Stmt *varDeclaration();
   Stmt *printStatement();
   Stmt *expressionStatement();
 
-  bool match(std::initializer_list<TokenType> types);
   bool check(TokenType type);
+  bool match(std::initializer_list<TokenType> types);
+  Token *consume(TokenType type, Token *startingToken, string message);
+
   bool isAtEnd();
-
+  Token *advance();
   Token *previous();
-  ParserError error(Token *token, string message);
 
-  void consume(TokenType type, Token *startingToken, string message);
-  void advance();
   void synchronize();
+  ParserError error(Token *token, string message);
 };
