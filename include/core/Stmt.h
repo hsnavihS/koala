@@ -2,8 +2,10 @@
 
 #include <any>
 
-#include "Expr.h"
 #include "Visitor.h"
+#include <vector>
+
+#include "Expr.h"
 
 class Stmt {
 public:
@@ -42,4 +44,15 @@ public:
   }
 
   Expr *expression;
+};
+
+class Block : public Stmt {
+public:
+  Block(vector<Stmt *> *statements) : statements(statements) {}
+
+  std::any accept(Visitor &visitor) override {
+    return visitor.visitBlockStmt(this);
+  }
+
+  vector<Stmt *> *statements;
 };

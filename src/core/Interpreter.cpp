@@ -114,6 +114,11 @@ any Interpreter::visitExpressionStmt(Expression *stmt) {
   return nullptr;
 }
 
+any Interpreter::visitBlockStmt(Block *stmt) {
+  executeBlock(stmt->statements, new Environment(environment));
+  return nullptr;
+}
+
 /**
  * If a variable hasn't explicitly been initialized, we'll set it to nil
  */
@@ -180,4 +185,21 @@ void Interpreter::printValue(any value) {
   } else if (value.type() == typeid(nullptr_t)) {
     cout << "nil" << endl;
   }
+}
+
+void Interpreter::executeBlock(vector<Stmt *> *statements,
+                               Environment *environment) {
+  Environment *parent = this->environment;
+
+  try {
+    this->environment = environment;
+
+    for (auto statement : *statements) {
+      execute(statement);
+    }
+  } catch (const RuntimeError &error) {
+    throw error;
+  }
+
+  this->environment = parent;
 }

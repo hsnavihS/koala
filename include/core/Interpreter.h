@@ -31,10 +31,12 @@ private:
   any visitAssignExpr(Assign *expr);
 
   any visitVarStmt(Var *stmt);
+  any visitBlockStmt(Block *stmt);
   any visitPrintStmt(Print *stmt);
   any visitExpressionStmt(Expression *stmt);
 
   bool isTrue(any value);
   bool areEqual(any left, std::any right);
   void validateNumberOperands(Token *token, any left, any right);
+  void executeBlock(vector<Stmt *> *statements, Environment *environment);
 };

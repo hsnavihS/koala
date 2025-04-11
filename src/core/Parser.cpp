@@ -44,8 +44,23 @@ Stmt *Parser::statement() {
   if (match({TokenType::PRINT})) {
     return printStatement();
   }
+  if (match({TokenType::LEFT_BRACE})) {
+    return new Block(block());
+  }
 
   return expressionStatement();
+}
+
+vector<Stmt *> *Parser::block() {
+  Token *startingToken = previous();
+  vector<Stmt *> *statements = new vector<Stmt *>;
+
+  while (!isAtEnd() && !check(TokenType::RIGHT_BRACE)) {
+    statements->push_back(declaration());
+  }
+
+  consume(TokenType::RIGHT_BRACE, startingToken, "Didn't find matching '}' for this block");
+  return statements;
 }
 
 Stmt *Parser::printStatement() {

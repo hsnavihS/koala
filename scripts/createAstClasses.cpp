@@ -18,6 +18,7 @@ const unordered_map<string, vector<string>> EXPR_CLASSES = {
 };
 
 const unordered_map<string, vector<string>> STMT_CLASSES = {
+    {"Block", {"vector<Stmt*> statements"}},
     {"Expression", {"Expr expression"}},
     {"Print", {"Expr expression"}},
     {"Var", {"Token name", "Expr initializer"}},
@@ -60,6 +61,7 @@ void writeExprSpecificImports(ofstream &file) {
 }
 
 void writeStmtSpecificImports(ofstream &file) {
+  file << "#include <vector>\n" << endl;
   file << "#include \"Expr.h\"\n" << endl;
 }
 

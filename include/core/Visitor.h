@@ -13,9 +13,10 @@ class Variable;
 class Assign;
 
 // forward declarations of used Stmt classes
-class Print;
-class Expression;
 class Var;
+class Print;
+class Block;
+class Expression;
 
 class Visitor {
 public:
@@ -28,6 +29,7 @@ public:
 
   // Could've implemented another interface for statements, but I think this is
   // fine for now
+  virtual any visitBlockStmt(Block *stmt) = 0;
   virtual any visitPrintStmt(Print *stmt) = 0;
   virtual any visitExpressionStmt(Expression *stmt) = 0;
   virtual any visitVarStmt(Var *stmt) = 0;
