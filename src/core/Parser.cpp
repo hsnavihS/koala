@@ -1,5 +1,6 @@
 #include "core/Parser.h"
 #include "core/Stmt.h"
+#include "core/TokenType.h"
 #include "error/ParserError.h"
 
 using namespace std;
@@ -50,8 +51,59 @@ Stmt *Parser::statement() {
   if (match({TokenType::IF})) {
     return ifStatement();
   }
+  if (match({TokenType::WHILE})) {
+    return whileStatement();
+  }
+  if (match({TokenType::FOR})) {
+    return forStatement();
+  }
 
   return expressionStatement();
+}
+
+Stmt *Parser::whileStatement() {
+  consume(TokenType::LEFT_PARENTHESIS, previous(), "Expected '(' after while");
+  Expr *condition = expression();
+  consume(TokenType::RIGHT_PARENTHESIS, previous(),
+          "Expected ')' after while condition");
+  Stmt *body = statement();
+
+  return new While(condition, body);
+}
+
+Stmt *Parser::forStatement() {
+  // Parsing the different parts of the for loop
+  consume(TokenType::LEFT_PARENTHESIS, previous(), "Expected '(' after for");
+
+  Stmt *initializer = nullptr;
+  if (match({TokenType::SEMICOLON})) {
+    initializer = nullptr;
+  } else if (match({TokenType::VAR})) {
+    initializer = varDeclaration();
+  } else {
+    initializer = expressionStatement();
+  }
+
+  Expr *condition = nullptr;
+  if (!check(TokenType::SEMICOLON)) {
+    condition = expression();
+  }
+  consume(TokenType::SEMICOLON, previous(), "Expected ';' after for condition");
+
+  Expr *increment = nullptr;
+  if (!check(TokenType::RIGHT_PARENTHESIS)) {
+    increment = expression();
+  }
+  consume(TokenType::RIGHT_PARENTHESIS, previous(),
+          "Expected ')' after for increment");
+
+  Stmt *body = statement();
+
+  // Converting the for loop to a while loop
+  Block *whileBlock = new Block(new vector<Stmt *>({body, new Expression(increment)}));
+  condition == nullptr ? new Literal(true) : condition;
+  Stmt *whileStmt = new While(condition, whileBlock);
+  return initializer == nullptr ? whileStmt : new Block(new vector<Stmt *>({initializer, whileStmt}));
 }
 
 Stmt *Parser::ifStatement() {

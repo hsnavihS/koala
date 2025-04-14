@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "core/Interpreter.h"
+#include "core/Stmt.h"
 #include "error/RuntimeError.h"
 
 using namespace std;
@@ -140,6 +141,13 @@ any Interpreter::visitIfStmt(If *stmt) {
     execute(stmt->thenBranch);
   } else if (stmt->elseBranch != nullptr) {
     execute(stmt->elseBranch);
+  }
+  return nullptr;
+}
+
+any Interpreter::visitWhileStmt(While *stmt) {
+  while (isTrue(evaluate(stmt->condition))) {
+    execute(stmt->body);
   }
   return nullptr;
 }

@@ -1,0 +1,15 @@
+var x = 5;
+
+print "Printing using a while loop:";
+while (x) {
+	print x;
+	x = x - 1;
+}
+
+print "";
+
+print "Printing using a for loop:";
+var i = 5;
+for (; i; i = i - 1) {
+	print i;
+}

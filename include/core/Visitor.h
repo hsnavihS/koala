@@ -17,6 +17,7 @@ class Logical;
 class If;
 class Var;
 class Print;
+class While;
 class Block;
 class Expression;
 
@@ -37,4 +38,5 @@ public:
   virtual any visitExpressionStmt(Expression *stmt) = 0;
   virtual any visitVarStmt(Var *stmt) = 0;
   virtual any visitIfStmt(If *stmt) = 0;
+  virtual any visitWhileStmt(While *stmt) = 0;
 };

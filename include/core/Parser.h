@@ -47,6 +47,8 @@ private:
   Stmt *printStatement();
   Stmt *expressionStatement();
   Stmt *ifStatement();
+  Stmt *whileStatement();
+  Stmt *forStatement();
 
   vector<Stmt *> *block();
 

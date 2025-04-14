@@ -12,6 +12,18 @@ public:
   virtual std::any accept(Visitor &visitor) = 0;
 };
 
+class While : public Stmt {
+public:
+  While(Expr *condition, Stmt *body) : condition(condition), body(body) {}
+
+  std::any accept(Visitor &visitor) override {
+    return visitor.visitWhileStmt(this);
+  }
+
+  Expr *condition;
+  Stmt *body;
+};
+
 class Print : public Stmt {
 public:
   Print(Expr *expression) : expression(expression) {}

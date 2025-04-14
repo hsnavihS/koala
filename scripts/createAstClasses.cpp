@@ -24,6 +24,7 @@ const unordered_map<string, vector<string>> STMT_CLASSES = {
     {"If", {"Expr condition", "Stmt thenBranch", "Stmt elseBranch"}},
     {"Print", {"Expr expression"}},
     {"Var", {"Token name", "Expr initializer"}},
+    {"While", {"Expr condition", "Stmt body"}},
 };
 
 void split(string s, vector<string> *result, string delimiter) {

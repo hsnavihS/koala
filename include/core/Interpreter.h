@@ -36,6 +36,7 @@ private:
   any visitPrintStmt(Print *stmt);
   any visitExpressionStmt(Expression *stmt);
   any visitIfStmt(If *stmt);
+  any visitWhileStmt(While *stmt);
 
   bool isTrue(any value);
   bool areEqual(any left, std::any right);
