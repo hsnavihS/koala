@@ -22,6 +22,20 @@ public:
   Expr *right;
 };
 
+class Logical : public Expr {
+public:
+  Logical(Expr *left, Token *op, Expr *right)
+      : left(left), op(op), right(right) {}
+
+  std::any accept(Visitor &visitor) override {
+    return visitor.visitLogicalExpr(this);
+  }
+
+  Expr *left;
+  Token *op;
+  Expr *right;
+};
+
 class Grouping : public Expr {
 public:
   Grouping(Expr *expression) : expression(expression) {}

@@ -103,6 +103,22 @@ any Interpreter::visitAssignExpr(Assign *expr) {
   return value;
 }
 
+any Interpreter::visitLogicalExpr(Logical *expr) {
+  any left = evaluate(expr->left);
+
+  if (expr->op->getType() == TokenType::OR) {
+    if (isTrue(left)) {
+      return left;
+    }
+  } else {
+    if (!isTrue(left)) {
+      return left;
+    }
+  }
+
+  return evaluate(expr->right);
+}
+
 any Interpreter::visitPrintStmt(Print *print) {
   any value = evaluate(print->expression);
   printValue(value);
@@ -116,6 +132,15 @@ any Interpreter::visitExpressionStmt(Expression *stmt) {
 
 any Interpreter::visitBlockStmt(Block *stmt) {
   executeBlock(stmt->statements, new Environment(environment));
+  return nullptr;
+}
+
+any Interpreter::visitIfStmt(If *stmt) {
+  if (isTrue(evaluate(stmt->condition))) {
+    execute(stmt->thenBranch);
+  } else if (stmt->elseBranch != nullptr) {
+    execute(stmt->elseBranch);
+  }
   return nullptr;
 }
 

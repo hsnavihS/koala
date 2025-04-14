@@ -29,11 +29,13 @@ private:
   any visitUnaryExpr(Unary *expr);
   any visitVariableExpr(Variable *expr);
   any visitAssignExpr(Assign *expr);
+  any visitLogicalExpr(Logical *expr);
 
   any visitVarStmt(Var *stmt);
   any visitBlockStmt(Block *stmt);
   any visitPrintStmt(Print *stmt);
   any visitExpressionStmt(Expression *stmt);
+  any visitIfStmt(If *stmt);
 
   bool isTrue(any value);
   bool areEqual(any left, std::any right);

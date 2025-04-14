@@ -1,0 +1,9 @@
+var str1 = "Shivansh";
+var str2 = "Shukla";
+var name = "Shivansh Shukla";
+
+if (str1 + " " + str2 == name) {
+	print true;
+} else {
+	print false;
+}

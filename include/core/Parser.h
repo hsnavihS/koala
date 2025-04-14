@@ -30,6 +30,8 @@ private:
    * primary -> NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")"
    * ;
    */
+  Expr *logicalOr();
+  Expr *logicalAnd();
   Expr *expression();
   Expr *equality();
   Expr *comparison();
@@ -44,7 +46,8 @@ private:
   Stmt *varDeclaration();
   Stmt *printStatement();
   Stmt *expressionStatement();
-  
+  Stmt *ifStatement();
+
   vector<Stmt *> *block();
 
   bool check(TokenType type);

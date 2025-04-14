@@ -47,8 +47,27 @@ Stmt *Parser::statement() {
   if (match({TokenType::LEFT_BRACE})) {
     return new Block(block());
   }
+  if (match({TokenType::IF})) {
+    return ifStatement();
+  }
 
   return expressionStatement();
+}
+
+Stmt *Parser::ifStatement() {
+  consume(TokenType::LEFT_PARENTHESIS, previous(),
+          "Expected '(' after 'if' keyword");
+  Expr *condition = expression();
+  consume(TokenType::RIGHT_PARENTHESIS, previous(),
+          "Expected ')' after 'if' condition");
+
+  Stmt *thenBranch = statement();
+  Stmt *elseBranch = nullptr;
+  if (match({TokenType::ELSE})) {
+    elseBranch = statement();
+  }
+
+  return new If(condition, thenBranch, elseBranch);
 }
 
 vector<Stmt *> *Parser::block() {
@@ -59,7 +78,8 @@ vector<Stmt *> *Parser::block() {
     statements->push_back(declaration());
   }
 
-  consume(TokenType::RIGHT_BRACE, startingToken, "Didn't find matching '}' for this block");
+  consume(TokenType::RIGHT_BRACE, startingToken,
+          "Didn't find matching '}' for this block");
   return statements;
 }
 
@@ -78,7 +98,7 @@ Stmt *Parser::expressionStatement() {
 Expr *Parser::expression() { return assignment(); }
 
 Expr *Parser::assignment() {
-  Expr *expr = equality();
+  Expr *expr = logicalOr();
 
   if (match({TokenType::EQUAL})) {
     Token *equals = previous();
@@ -99,6 +119,30 @@ Expr *Parser::assignment() {
    *   var a = 1;
    *   print a = 2; // this should work
    */
+  return expr;
+}
+
+Expr *Parser::logicalOr() {
+  Expr *expr = logicalAnd();
+
+  while (match({TokenType::OR})) {
+    Token *op = previous();
+    Expr *right = logicalAnd();
+    expr = new Logical(expr, op, right);
+  }
+
+  return expr;
+}
+
+Expr *Parser::logicalAnd() {
+  Expr *expr = equality();
+
+  while (match({TokenType::AND})) {
+    Token *op = previous();
+    Expr *right = equality();
+    expr = new Logical(expr, op, right);
+  }
+
   return expr;
 }
 

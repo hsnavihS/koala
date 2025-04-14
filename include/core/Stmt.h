@@ -23,6 +23,20 @@ public:
   Expr *expression;
 };
 
+class If : public Stmt {
+public:
+  If(Expr *condition, Stmt *thenBranch, Stmt *elseBranch)
+      : condition(condition), thenBranch(thenBranch), elseBranch(elseBranch) {}
+
+  std::any accept(Visitor &visitor) override {
+    return visitor.visitIfStmt(this);
+  }
+
+  Expr *condition;
+  Stmt *thenBranch;
+  Stmt *elseBranch;
+};
+
 class Var : public Stmt {
 public:
   Var(Token *name, Expr *initializer) : name(name), initializer(initializer) {}
