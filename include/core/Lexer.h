@@ -1,18 +1,19 @@
 #pragma once
 
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
-#include "Token.h"
-#include "TokenType.h"
 #include "error/ErrorReporter.h"
+#include "types/Token.h"
+#include "types/TokenType.h"
 
 using namespace std;
 
 class Lexer {
 public:
-  Lexer(string code, ErrorReporterPtr errorReporter) : code(code), errorReporter(errorReporter) {}
+  Lexer(string code, ErrorReporterPtr errorReporter)
+      : code(code), errorReporter(errorReporter) {}
   vector<Token> generateTokens();
 
 private:
@@ -29,21 +30,12 @@ private:
   Token processNumber(int *i);
 
   unordered_map<string, TokenType> keywords = {
-    {"and", TokenType::AND},
-    {"class", TokenType::CLASS},
-    {"else", TokenType::ELSE},
-    {"false", TokenType::FALSE},
-    {"func", TokenType::FUNC},
-    {"for", TokenType::FOR},
-    {"if", TokenType::IF},
-    {"nil", TokenType::NIL},
-    {"or", TokenType::OR},
-    {"print", TokenType::PRINT},
-    {"return", TokenType::RETURN},
-    {"super", TokenType::SUPER},
-    {"this", TokenType::THIS},
-    {"true", TokenType::TRUE},
-    {"var", TokenType::VAR},
-    {"while", TokenType::WHILE}
-  };
+      {"and", TokenType::AND},       {"class", TokenType::CLASS},
+      {"else", TokenType::ELSE},     {"false", TokenType::FALSE},
+      {"func", TokenType::FUNC},     {"for", TokenType::FOR},
+      {"if", TokenType::IF},         {"nil", TokenType::NIL},
+      {"or", TokenType::OR},         {"print", TokenType::PRINT},
+      {"return", TokenType::RETURN}, {"super", TokenType::SUPER},
+      {"this", TokenType::THIS},     {"true", TokenType::TRUE},
+      {"var", TokenType::VAR},       {"while", TokenType::WHILE}};
 };

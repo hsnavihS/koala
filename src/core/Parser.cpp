@@ -1,7 +1,7 @@
 #include "core/Parser.h"
-#include "core/Stmt.h"
-#include "core/TokenType.h"
 #include "error/ParserError.h"
+#include "types/Stmt.h"
+#include "types/TokenType.h"
 
 using namespace std;
 
@@ -100,10 +100,13 @@ Stmt *Parser::forStatement() {
   Stmt *body = statement();
 
   // Converting the for loop to a while loop
-  Block *whileBlock = new Block(new vector<Stmt *>({body, new Expression(increment)}));
+  Block *whileBlock =
+      new Block(new vector<Stmt *>({body, new Expression(increment)}));
   condition == nullptr ? new Literal(true) : condition;
   Stmt *whileStmt = new While(condition, whileBlock);
-  return initializer == nullptr ? whileStmt : new Block(new vector<Stmt *>({initializer, whileStmt}));
+  return initializer == nullptr
+             ? whileStmt
+             : new Block(new vector<Stmt *>({initializer, whileStmt}));
 }
 
 Stmt *Parser::ifStatement() {

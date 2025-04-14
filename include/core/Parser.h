@@ -2,12 +2,12 @@
 
 #include <vector>
 
-#include "Expr.h"
-#include "Token.h"
-#include "TokenType.h"
-#include "core/Stmt.h"
 #include "error/ErrorReporter.h"
 #include "error/ParserError.h"
+#include "types/Expr.h"
+#include "types/Stmt.h"
+#include "types/Token.h"
+#include "types/TokenType.h"
 
 class Parser {
 public:

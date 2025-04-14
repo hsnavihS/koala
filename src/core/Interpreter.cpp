@@ -3,8 +3,8 @@
 #include <iostream>
 
 #include "core/Interpreter.h"
-#include "core/Stmt.h"
 #include "error/RuntimeError.h"
+#include "types/Stmt.h"
 
 using namespace std;
 

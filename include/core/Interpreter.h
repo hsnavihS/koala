@@ -2,11 +2,11 @@
 
 #include <any>
 
-#include "Expr.h"
-#include "Stmt.h"
-#include "Visitor.h"
-#include "core/Environment.h"
 #include "error/ErrorReporter.h"
+#include "types/Environment.h"
+#include "types/Expr.h"
+#include "types/Stmt.h"
+#include "types/Visitor.h"
 
 using namespace std;
 

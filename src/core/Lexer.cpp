@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "core/Lexer.h"
-#include "core/Token.h"
+#include "types/Token.h"
 
 using namespace std;
 
@@ -129,7 +129,8 @@ vector<Token> Lexer::generateTokens() {
     }
   }
 
-  tokens.push_back(Token(TokenType::END_OF_FILE, "EOF", nullptr, line, column + 1));
+  tokens.push_back(
+      Token(TokenType::END_OF_FILE, "EOF", nullptr, line, column + 1));
   return tokens;
 }
 

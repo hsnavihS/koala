@@ -1,7 +1,7 @@
 #include <any>
 #include <stdexcept>
 
-#include "core/Environment.h"
+#include "types/Environment.h"
 
 void Environment::assign(const string &name, const any &value) {
   if (values.find(name) != values.end()) {
