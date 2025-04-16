@@ -40,15 +40,18 @@ private:
   Expr *unary();
   Expr *primary();
   Expr *assignment();
+  Expr *call();
 
   Stmt *statement();
   Stmt *declaration();
   Stmt *varDeclaration();
+  Stmt *functionDeclaration(const string &type);
   Stmt *printStatement();
   Stmt *expressionStatement();
   Stmt *ifStatement();
   Stmt *whileStatement();
   Stmt *forStatement();
+  Stmt *returnStatement();
 
   vector<Stmt *> *block();
 
@@ -59,6 +62,7 @@ private:
   bool isAtEnd();
   Token *advance();
   Token *previous();
+  Expr *finishCall(Expr *callee);
 
   void synchronize();
   ParserError error(Token *token, string message);

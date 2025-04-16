@@ -12,6 +12,7 @@ class Binary;
 class Variable;
 class Assign;
 class Logical;
+class Call;
 
 // forward declarations of used Stmt classes
 class If;
@@ -20,6 +21,8 @@ class Print;
 class While;
 class Block;
 class Expression;
+class Function;
+class Return;
 
 class Visitor {
 public:
@@ -30,6 +33,7 @@ public:
   virtual any visitVariableExpr(Variable *expr) = 0;
   virtual any visitAssignExpr(Assign *expr) = 0;
   virtual any visitLogicalExpr(Logical *expr) = 0;
+  virtual any visitCallExpr(Call *expr) = 0;
 
   // Could've implemented another interface for statements, but I think this is
   // fine for now
@@ -39,4 +43,6 @@ public:
   virtual any visitVarStmt(Var *stmt) = 0;
   virtual any visitIfStmt(If *stmt) = 0;
   virtual any visitWhileStmt(While *stmt) = 0;
+  virtual any visitFunctionStmt(Function *stmt) = 0;
+  virtual any visitReturnStmt(Return *stmt) = 0;
 };

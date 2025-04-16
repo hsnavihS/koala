@@ -11,6 +11,7 @@ using namespace std;
 const unordered_map<string, vector<string>> EXPR_CLASSES = {
     {"Assign", {"Token name", "Expr value"}},
     {"Binary", {"Expr left", "Token op", "Expr right"}},
+    {"Call", {"Expr callee", "Token paren", "vector<Expr*> arguments"}},
     {"Grouping", {"Expr expression"}},
     {"Literal", {"any value"}},
     {"Logical", {"Expr left", "Token op", "Expr right"}},
@@ -21,9 +22,12 @@ const unordered_map<string, vector<string>> EXPR_CLASSES = {
 const unordered_map<string, vector<string>> STMT_CLASSES = {
     {"Block", {"vector<Stmt*> statements"}},
     {"Expression", {"Expr expression"}},
+    {"Function",
+     {"Token name", "vector<Token*> parameters", "vector<Stmt*> body"}},
     {"If", {"Expr condition", "Stmt thenBranch", "Stmt elseBranch"}},
     {"Print", {"Expr expression"}},
     {"Var", {"Token name", "Expr initializer"}},
+    {"Return", {"Token keyword", "Expr value"}},
     {"While", {"Expr condition", "Stmt body"}},
 };
 
@@ -60,11 +64,10 @@ void writeVisitorMethod(ofstream &file, string className, string filename) {
 }
 
 void writeExprSpecificImports(ofstream &file) {
-  file << "#include \"Token.h\"\n" << endl;
+  file << "#include \"types/Token.h\"\n" << endl;
 }
 
 void writeStmtSpecificImports(ofstream &file) {
-  file << "#include <vector>\n" << endl;
   file << "#include \"Expr.h\"\n" << endl;
 }
 
@@ -74,8 +77,9 @@ void writeToHeaderFile(ofstream &file,
                        string filename) {
   // header guard and import(s)
   file << "#pragma once\n" << endl;
-  file << "#include <any>\n" << endl;
-  file << "#include \"Visitor.h\"" << endl;
+  file << "#include <any>" << endl;
+  file << "#include <vector>\n" << endl;
+  file << "#include \"types/Visitor.h\"" << endl;
 
   // write the specific imports
   if (strcmp(filename.c_str(), "Expr") == 0) {
@@ -150,7 +154,7 @@ int main(int argc, char **argv) {
   string filename = argv[1];
   string currentPath = filesystem::current_path().string();
   currentPath = currentPath.substr(0, currentPath.rfind("/"));
-  string path = currentPath + "/include/core/" + filename + ".h";
+  string path = currentPath + "/include/types/" + filename + ".h";
   auto classes =
       strcmp(filename.c_str(), "Expr") == 0 ? EXPR_CLASSES : STMT_CLASSES;
 

@@ -3,7 +3,10 @@
 #include <iostream>
 
 #include "core/Interpreter.h"
+#include "error/ReturnException.h"
 #include "error/RuntimeError.h"
+#include "types/Callable.h"
+#include "types/KoalaFunction.h"
 #include "types/Stmt.h"
 
 using namespace std;
@@ -120,6 +123,34 @@ any Interpreter::visitLogicalExpr(Logical *expr) {
   return evaluate(expr->right);
 }
 
+any Interpreter::visitCallExpr(Call *expr) {
+  any callee = evaluate(expr->callee);
+
+  cout << callee.type().name() << endl;
+
+  vector<any> arguments;
+  for (auto &argument : *expr->arguments) {
+    arguments.push_back(evaluate(argument));
+  }
+
+  try {
+    Callable *function = any_cast<Callable *>(callee);
+
+    if (arguments.size() != function->arity()) {
+      throw RuntimeError("Expected " + to_string(function->arity()) +
+                             " arguments but got " +
+                             to_string(arguments.size()),
+                         expr->paren->getLine(), expr->paren->getColumn());
+    }
+
+    any returnValue = function->call(this, arguments);
+    return returnValue;
+  } catch (const bad_any_cast &) {
+    throw RuntimeError("Can only call functions and classes.",
+                       expr->paren->getLine(), expr->paren->getColumn());
+  }
+}
+
 any Interpreter::visitPrintStmt(Print *print) {
   any value = evaluate(print->expression);
   printValue(value);
@@ -163,6 +194,24 @@ any Interpreter::visitVarStmt(Var *stmt) {
 
   environment->define(stmt->name->getLexeme(), value);
   return nullptr;
+}
+
+any Interpreter::visitFunctionStmt(Function *stmt) {
+  // NOTE: Since C++ does not have the concept of an interface, we need to cast
+  // the function as a callable before storing it
+  Callable *function = new KoalaFunction(stmt);
+  this->environment->define(stmt->name->getLexeme(), function);
+  cout << stmt->name->getLexeme() << endl;
+  return nullptr;
+}
+
+any Interpreter::visitReturnStmt(Return *stmt) {
+  any value = nullptr;
+  if (stmt->value != nullptr) {
+    value = evaluate(stmt->value);
+  }
+
+  throw ReturnException(value);
 }
 
 /** Helpers **/

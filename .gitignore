@@ -11,3 +11,7 @@ Build/**
 
 # Ignore known script binaries
 createAstClasses
+
+# Ignore VSC specific files
+# Yes I set up debugging in VS Code because I couldn't be bothered wrestling with neovim configurations
+.vscode/

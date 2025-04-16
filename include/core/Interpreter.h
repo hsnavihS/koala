@@ -7,17 +7,22 @@
 #include "types/Expr.h"
 #include "types/Stmt.h"
 #include "types/Visitor.h"
+#include "utils/Time.h"
 
 using namespace std;
 
 class Interpreter : public Visitor {
 public:
-  Interpreter(ErrorReporterPtr errorReporter) : errorReporter(errorReporter) {};
+  Interpreter(ErrorReporterPtr errorReporter) {
+    this->errorReporter = errorReporter;
+    this->globals->define("time", make_shared<Time>());
+  };
   void interpret(vector<Stmt *> *statements);
 
-private:
   ErrorReporterPtr errorReporter;
-  Environment *environment = new Environment();
+  Environment *globals = new Environment();
+  Environment *environment = globals;
+  Environment *getGlobals() { return globals; }
 
   any evaluate(Expr *expr);
   void execute(Stmt *stmt);
@@ -30,6 +35,7 @@ private:
   any visitVariableExpr(Variable *expr);
   any visitAssignExpr(Assign *expr);
   any visitLogicalExpr(Logical *expr);
+  any visitCallExpr(Call *expr);
 
   any visitVarStmt(Var *stmt);
   any visitBlockStmt(Block *stmt);
@@ -37,6 +43,8 @@ private:
   any visitExpressionStmt(Expression *stmt);
   any visitIfStmt(If *stmt);
   any visitWhileStmt(While *stmt);
+  any visitFunctionStmt(Function *stmt);
+  any visitReturnStmt(Return *stmt);
 
   bool isTrue(any value);
   bool areEqual(any left, std::any right);

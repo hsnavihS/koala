@@ -1,11 +1,10 @@
 #pragma once
 
 #include <any>
-
-#include "Visitor.h"
 #include <vector>
 
 #include "Expr.h"
+#include "types/Visitor.h"
 
 class Stmt {
 public:
@@ -22,6 +21,18 @@ public:
 
   Expr *condition;
   Stmt *body;
+};
+
+class Return : public Stmt {
+public:
+  Return(Token *keyword, Expr *value) : keyword(keyword), value(value) {}
+
+  std::any accept(Visitor &visitor) override {
+    return visitor.visitReturnStmt(this);
+  }
+
+  Token *keyword;
+  Expr *value;
 };
 
 class Print : public Stmt {
@@ -47,6 +58,20 @@ public:
   Expr *condition;
   Stmt *thenBranch;
   Stmt *elseBranch;
+};
+
+class Function : public Stmt {
+public:
+  Function(Token *name, vector<Token *> *parameters, vector<Stmt *> *body)
+      : name(name), parameters(parameters), body(body) {}
+
+  std::any accept(Visitor &visitor) override {
+    return visitor.visitFunctionStmt(this);
+  }
+
+  Token *name;
+  vector<Token *> *parameters;
+  vector<Stmt *> *body;
 };
 
 class Var : public Stmt {

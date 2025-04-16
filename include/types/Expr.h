@@ -1,9 +1,10 @@
 #pragma once
 
 #include <any>
+#include <vector>
 
-#include "Token.h"
-#include "Visitor.h"
+#include "types/Token.h"
+#include "types/Visitor.h"
 
 class Expr {
 public:
@@ -45,6 +46,20 @@ public:
   }
 
   Expr *expression;
+};
+
+class Call : public Expr {
+public:
+  Call(Expr *callee, Token *paren, vector<Expr *> *arguments)
+      : callee(callee), paren(paren), arguments(arguments) {}
+
+  std::any accept(Visitor &visitor) override {
+    return visitor.visitCallExpr(this);
+  }
+
+  Expr *callee;
+  Token *paren;
+  vector<Expr *> *arguments;
 };
 
 class Variable : public Expr {

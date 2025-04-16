@@ -20,11 +20,40 @@ Stmt *Parser::declaration() {
     if (match({TokenType::VAR})) {
       return varDeclaration();
     }
+    if (match({TokenType::FUNC})) {
+      return functionDeclaration("function");
+    }
     return statement();
   } catch (ParserError &error) {
     synchronize();
   }
   return nullptr;
+}
+
+Stmt *Parser::functionDeclaration(const string &type) {
+  Token *name =
+      consume(TokenType::IDENTIFIER, previous(), "Expected " + type + " name");
+  consume(TokenType::LEFT_PARENTHESIS, previous(),
+          "Expected '(' after " + type + " name");
+  vector<Token *> *parameters = new vector<Token *>;
+
+  if (!check(TokenType::RIGHT_PARENTHESIS)) {
+    do {
+      if (parameters->size() >= 255) {
+        error(&tokens.at(current - 1), "Can't have more than 255 parameters");
+      }
+      parameters->push_back(consume(TokenType::IDENTIFIER, previous(),
+                                    "Expected parameter name"));
+    } while (match({TokenType::COMMA}));
+  }
+
+  consume(TokenType::RIGHT_PARENTHESIS, previous(),
+          "Expected ')' after parameters");
+  consume(TokenType::LEFT_BRACE, previous(),
+          "Expected '{' before function body");
+
+  vector<Stmt *> *body = block();
+  return new Function(name, parameters, body);
 }
 
 Stmt *Parser::varDeclaration() {
@@ -57,8 +86,22 @@ Stmt *Parser::statement() {
   if (match({TokenType::FOR})) {
     return forStatement();
   }
+  if (match({TokenType::RETURN})) {
+    return returnStatement();
+  }
 
   return expressionStatement();
+}
+
+Stmt *Parser::returnStatement() {
+  Token *keyword = previous();
+  Expr *value = nullptr;
+  if (!check(TokenType::SEMICOLON)) {
+    value = expression();
+  }
+
+  consume(TokenType::SEMICOLON, previous(), "Expected ';' after return value");
+  return new Return(keyword, value);
 }
 
 Stmt *Parser::whileStatement() {
@@ -260,7 +303,21 @@ Expr *Parser::unary() {
     return new Unary(op, right);
   }
 
-  return primary();
+  return call();
+}
+
+Expr *Parser::call() {
+  Expr *expr = primary();
+
+  while (true) {
+    if (match({TokenType::LEFT_PARENTHESIS})) {
+      expr = finishCall(expr);
+    } else {
+      break;
+    }
+  }
+
+  return expr;
 }
 
 Expr *Parser::primary() {
@@ -367,4 +424,22 @@ void Parser::synchronize() {
 
     advance();
   }
+}
+
+Expr *Parser::finishCall(Expr *callee) {
+  vector<Expr *> *arguments = new vector<Expr *>();
+
+  if (!check(TokenType::RIGHT_PARENTHESIS)) {
+    do {
+      if (arguments->size() >= 255) {
+        error(&tokens.at(current - 1), "Can't have more than 255 arguments");
+      }
+      arguments->push_back(expression());
+    } while (match({TokenType::COMMA}));
+  }
+
+  Token *closingParenthesis = consume(TokenType::RIGHT_PARENTHESIS, previous(),
+                                      "Expected ')' after function arguments");
+
+  return new Call(callee, closingParenthesis, arguments);
 }
