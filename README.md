@@ -42,7 +42,7 @@ The project is far from done, these are some things off the top of my head that 
 - **Closures** (currently functions work without closures)
 - **Support for Object-Oriented Programming** (classes and inheritance)
 
-Currently it's quite jarring to write ```.kol``` files, since I've been fascinated by LSP, treesitter and related technologies in the past, I'd also like to have:
+Currently it's quite jarring to write ```.kol``` files. Since I've been fascinated by LSP, treesitter and related technologies in the past, I'd also like to have:
 - **Integration with Tree-sitter** for better syntax parsing
 - **LSP Support** to enable editor features like autocomplete, go-to-definition, error detection etc.
 
@@ -65,7 +65,6 @@ To build the project:
 ```bash
 mkdir build && cd build
 cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .. && make
-./koala scripts/test.koala
 ```
 
 This will generate a binary called ```koala``` in the build directory, which can be invoked in one of two ways:
