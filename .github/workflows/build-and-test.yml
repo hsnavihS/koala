@@ -21,16 +21,12 @@ jobs:
       - name: Build
         run: cmake --build build
 
-      - name: Run hello world
+      - name: Run tests
         run: |
-          output=$(./build/koala ./tests/helloworld.kol)
-          expected="Hello, world!"
-          diff_output=$(diff -B -y <(echo "$output") <(echo "$expected"))
-          if [ -n "$diff_output" ]; then
-            echo "Output does not match expected output:"
-            echo "$diff_output"
+          sudo chmod +x ./scripts/generateoutputs.sh
+          ./scripts/generateoutputs.sh
+          if [ $? -ne 0 ]; then
             exit 1
           else
-            echo "Hello world passed!"
+            exit 0
           fi
-

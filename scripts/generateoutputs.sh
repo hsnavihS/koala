@@ -3,6 +3,10 @@
 # this flag makes sure that the file exits as soon as a command exits with a non-zero status
 set -e
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+RESET='\033[0m'
+
 KOALA_BINARY="./build/koala"
 TEST_FILES_DIR="./tests"
 OUTPUT_FILES_DIR="./tests/output"
@@ -25,12 +29,15 @@ for file in "$TEST_FILES_DIR"/*.kol; do
   
   # pipe stdout and stderr to the output file
   if ! "$KOALA_BINARY" "$file" > "$output_file" 2>&1; then
-    echo "[ERROR] Test failed for: $file. Check $output_file for details."
+    echo -e "${RED}[ERROR] Test failed for:${RESET} $file."
+    echo ""
+    cat "$output_file"
+    exit 1
   else
-    echo "[OK] Test passed: $file"
+    echo -e "${GREEN}[OK] Test passed:${RESET} $file"
   fi
 
   echo ""
 done
 
-echo "[OUTPUTGEN] All test files processed."
+echo -e "${GREEN}[OUTPUTGEN] All test files processed.${RESET}"
