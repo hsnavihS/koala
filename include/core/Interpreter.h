@@ -7,7 +7,6 @@
 #include "types/Expr.h"
 #include "types/Stmt.h"
 #include "types/Visitor.h"
-#include "utils/Time.h"
 
 using namespace std;
 
@@ -15,7 +14,6 @@ class Interpreter : public Visitor {
 public:
   Interpreter(ErrorReporterPtr errorReporter) {
     this->errorReporter = errorReporter;
-    this->globals->define("time", make_shared<Time>());
   };
   void interpret(vector<Stmt *> *statements);
 

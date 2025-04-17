@@ -3,9 +3,6 @@ func fib(n) {
 	return fib(n - 1) + fib(n - 2);
 }
 
-var startTime = time();
 for (var i = 0; i < 15; i = i + 1) {
 	print fib(i);
 }
-var endTime = time();
-print "Total time taken: " + (endTime - startTime) + " seconds";

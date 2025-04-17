@@ -126,8 +126,6 @@ any Interpreter::visitLogicalExpr(Logical *expr) {
 any Interpreter::visitCallExpr(Call *expr) {
   any callee = evaluate(expr->callee);
 
-  cout << callee.type().name() << endl;
-
   vector<any> arguments;
   for (auto &argument : *expr->arguments) {
     arguments.push_back(evaluate(argument));
@@ -201,7 +199,6 @@ any Interpreter::visitFunctionStmt(Function *stmt) {
   // the function as a callable before storing it
   Callable *function = new KoalaFunction(stmt);
   this->environment->define(stmt->name->getLexeme(), function);
-  cout << stmt->name->getLexeme() << endl;
   return nullptr;
 }
 
