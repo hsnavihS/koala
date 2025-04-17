@@ -1,0 +1,60 @@
+var a = 1;
+var b = 2;
+
+if (a < b) {
+    print "a is less than b";
+}
+
+if (a > b) {
+    print "a is greater than b";
+} else {
+    print "a is not greater than b";
+}
+
+if (a == 1) {
+    print "a is 1";
+} else if (a == 2) {
+    print "a is 2";
+} else {
+    print "a is something else";
+}
+
+if (true) {
+    print "true is true";
+}
+
+if (false) {
+    print "false is true";
+} else {
+    print "false is false";
+}
+
+if (nil) {
+    print "nil is true";
+} else {
+    print "nil is false";
+}
+
+if (0) {
+    print "0 is true";
+} else {
+    print "0 is false";
+}
+
+if (1) {
+    print "1 is true";
+} else {
+    print "1 is false";
+}
+
+if ("") {
+    print "empty string is true";
+} else {
+    print "empty string is false";
+}
+
+if ("hello") {
+    print "non-empty string is true";
+} else {
+    print "non-empty string is false";
+} 

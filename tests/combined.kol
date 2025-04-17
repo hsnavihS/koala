@@ -1,0 +1,61 @@
+func isPrime(n) {
+    if (n <= 1) return false;
+    if (n <= 3) return true;
+    
+    var i = 2;
+    while (i * i <= n) {
+        var quotient = n / i;
+        if (quotient * i == n) return false;
+        i = i + 1;
+    }
+    return true;
+}
+
+func findPrimes(limit) {
+    var count = 0;
+    var current = 2;
+    
+    while (count < limit) {
+        if (isPrime(current)) {
+            print current;
+            count = count + 1;
+        }
+        current = current + 1;
+    }
+}
+
+print "Primes:";
+findPrimes(10);
+
+func fibonacci(n) {
+    if (n <= 1) return n;
+    
+    var a = 0;
+    var b = 1;
+    var temp;
+    
+    for (var i = 2; i <= n; i = i + 1) {
+        temp = a + b;
+        a = b;
+        b = temp;
+    }
+    
+    return b;
+}
+
+print "";
+print "Fibonacci numbers:";
+for (var i = 0; i < 10; i = i + 1) {
+    print fibonacci(i);
+}
+
+func factorial(n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+
+print "";
+print "Factorials:";
+for (var i = 0; i < 10; i = i + 1) {
+    print factorial(i);
+}

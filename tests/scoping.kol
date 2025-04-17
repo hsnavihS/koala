@@ -1,0 +1,57 @@
+var global = "global";
+
+func testScope() {
+    var local = "local";
+    print global;
+    print local;
+}
+
+testScope();
+print global;
+
+{
+    var block = "block";
+    print global;
+    print block;
+}
+
+print global;
+
+func shadowTest() {
+    var global = "shadowed";
+    print global;
+}
+
+shadowTest();
+print global;
+
+func nestedScope() {
+    var outer = "outer";
+    {
+        var inner = "inner";
+        print outer;
+        print inner;
+    }
+    print outer;
+}
+
+nestedScope();
+
+var x = "global x";
+var y = "global y";
+
+{
+    var x = "local x";
+    print x;
+    print y;
+}
+
+print x;
+print y;
+
+func scopeTest(a) {
+    var a = "shadowed parameter";
+    print a;
+}
+
+scopeTest("parameter"); 

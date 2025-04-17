@@ -1,15 +1,39 @@
-var x = 5;
-
-print "Printing using a while loop:";
-while (x) {
-	print x;
-	x = x - 1;
+var i = 0;
+while (i < 5) {
+	print i;
+	i = i + 1;
 }
 
 print "";
 
-print "Printing using a for loop:";
-var i = 5;
-for (; i; i = i - 1) {
-	print i;
+for (var j = 0; j < 5; j = j + 1) {
+	print j;
+}
+
+print "";
+
+var k = 0;
+while (k) {
+	print "This should not print";
+	k = k + 1;
+}
+
+print "";
+
+for (var l = 0; l; l = l + 1) {
+	print "This should not print";
+}
+
+print "";
+
+var m = 5;
+while (m) {
+	print m;
+	m = m - 1;
+}
+
+print "";
+
+for (var n = 5; n; n = n - 1) {
+	print n;
 }
