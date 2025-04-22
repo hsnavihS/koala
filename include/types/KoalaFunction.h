@@ -27,7 +27,7 @@ public:
 
     try {
       interpreter->executeBlock(declaration->body, environment);
-    } catch (ReturnException value) {
+    } catch (const ReturnException &value) {
       // Restore the previous environment
       interpreter->environment = previous;
       return value.getValue();
