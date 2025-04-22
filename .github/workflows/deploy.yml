@@ -24,8 +24,6 @@ jobs:
 
     - name: Copy site files
       run: |
-        mkdir site
-        cp index.html site/
         cp build/koala.js build/koala.wasm site/
 
     - name: Deploy to GitHub Pages
