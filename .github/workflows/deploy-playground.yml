@@ -42,6 +42,11 @@ jobs:
       - name: Copy site files
         run: cp build/koala.js build/koala.wasm site/
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: 'site/'
+
   deploy:
     environment:
       name: github-pages
