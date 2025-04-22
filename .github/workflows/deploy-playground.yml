@@ -43,7 +43,7 @@ jobs:
         run: cp build/koala.js build/koala.wasm site/
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
           name: github-pages
           path: 'site/'
