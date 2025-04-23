@@ -8,103 +8,7 @@
       type="image/x-icon"
       href="https://cdn.iconscout.com/icon/free/png-256/free-koala-icon-download-in-svg-png-gif-file-formats--bear-lazy-honey-wild-animal-and-nature-pack-icons-33903.png?f=webp&w=256"
     />
-    <style>
-      :root {
-        --bg-color: #1a1a1a;
-        --text-color: #e0e0e0;
-        --accent-color: #4a9eff;
-        --border-color: #333;
-        --button-bg: #2a2a2a;
-        --button-hover: #3a3a3a;
-        --error-border-color: #ff4444;
-      }
-
-      body {
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        font-family: "Fira Code", monospace;
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 2rem;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-
-      h1 {
-        color: var(--accent-color);
-        text-align: center;
-        margin-bottom: 2rem;
-      }
-
-      .controls {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1rem;
-        width: 100%;
-      }
-
-      button {
-        background-color: var(--button-bg);
-        color: var(--text-color);
-        border: 1px solid var(--border-color);
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-      }
-
-      button:hover {
-        background-color: var(--button-hover);
-      }
-
-      button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-
-      textarea {
-        width: 100%;
-        min-height: 40vh;
-        max-height: 40vh;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        border: 1px solid var(--border-color);
-        padding: 1rem;
-        border-radius: 4px;
-        font-family: "Fira Code", monospace;
-        margin-bottom: 1rem;
-        resize: none;
-        box-sizing: border-box;
-        overflow-y: auto;
-      }
-
-      pre {
-        background-color: var(--button-bg);
-        padding: 1rem;
-        border-radius: 4px;
-        border: 1px solid var(--border-color);
-        white-space: pre-wrap;
-        height: 15vh;
-        width: 100%;
-        box-sizing: border-box;
-        overflow-y: auto;
-        transition: border-color 0.2s;
-      }
-
-      pre.error {
-        border-color: var(--error-border-color);
-      }
-
-      select {
-        background-color: var(--button-bg);
-        color: var(--text-color);
-        border: 1px solid var(--border-color);
-        padding: 0.5rem;
-        border-radius: 4px;
-        flex-grow: 1;
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <script src="https://cdn.jsdelivr.net/npm/ansi_up@5.0.0/ansi_up.min.js"></script>
@@ -113,10 +17,6 @@
     <div class="controls">
       <select id="example-select">
         <option value="">Select an example...</option>
-        <option value="hello_world">Hello world</option>
-        <option value="factorial">Factorial</option>
-        <option value="fibonacci">Fibonacci</option>
-        <option value="scoping">Scoping</option>
       </select>
       <button id="run-btn" disabled>Run</button>
       <button id="clear-btn">Clear</button>
@@ -127,119 +27,13 @@ print "Hi, You can write your Koala code here, or choose an example from the dro
     >
     <pre id="output">// Output will appear here</pre>
 
-    <script>
-      const examples = {
-        hello_world: `print "Hello, World!";`,
-        factorial: `func factorial(n) {
-  if (n <= 1) return 1;
-  return n * factorial(n - 1);
-}
+    <footer>
+      <a href="https://github.com/hsnavihS/koala">Source</a> | Made with ❤ by
+      <a href="https://www.linkedin.com/in/shuklashivansh/">Shivansh</a>
+    </footer>
 
-print factorial(5);`,
-        fibonacci: `func fibonacci(n) {
-  if (n <= 1) return n;
-  return fibonacci(n - 1) + fibonacci(n - 2);
-}
-
-for (var i = 0; i <= 10; i = i + 1) {
-  print fibonacci(i);
-}`,
-        scoping: `func nestedScope() {
-  var outer = "outer";
-  {
-    var inner = "inner";
-    print outer;
-    print inner;
-  }
-  print outer;
-}
-
-nestedScope();
-
-func scopeTest(a) {
-  var a = "shadowed parameter";
-  print a;
-}
-
-scopeTest("parameter");`,
-      };
-
-      // Pressing tab shouldn't take the user to the next HTML element when writing code
-      document.getElementById("code").addEventListener("keydown", function (e) {
-        if (e.key === "Tab") {
-          e.preventDefault();
-          const start = this.selectionStart;
-          const end = this.selectionEnd;
-          const value = this.value;
-
-          // tab is 2 spaces
-          this.value = value.substring(0, start) + "  " + value.substring(end);
-          this.selectionStart = this.selectionEnd = start + 2;
-        }
-      });
-
-      const ansiUp = new AnsiUp();
-      let koalaOutput = "";
-
-      function updateOutput(text) {
-        koalaOutput += text + "\n";
-        const outputElement = document.getElementById("output");
-        outputElement.innerHTML = ansiUp.ansi_to_html(koalaOutput.trim());
-
-        // If output has errors, add error class to the output element
-        const lowerText = koalaOutput.toLowerCase();
-        if (lowerText.includes("error")) {
-          outputElement.classList.add("error");
-        } else {
-          outputElement.classList.remove("error");
-        }
-      }
-
-      var Module = {
-        preRun: [],
-        postRun: [],
-        print: (text) => {
-          updateOutput(text);
-        },
-        printErr: (text) => {
-          updateOutput(text);
-        },
-        onRuntimeInitialized: function () {
-          document.getElementById("run-btn").disabled = false;
-
-          window.runKoala = function () {
-            koalaOutput = ""; // clear previous output
-            document.getElementById("output").textContent = koalaOutput;
-
-            const code = document.getElementById("code").value;
-            const result = Module.ccall(
-              "interpret", // name of C++ function
-              "void", // return type (you don't need a return string anymore)
-              ["string"], // argument types
-              [code], // argument values
-            );
-          };
-
-          document.getElementById("run-btn").onclick = runKoala;
-        },
-      };
-      document
-        .getElementById("example-select")
-        .addEventListener("change", function (e) {
-          const code = examples[e.target.value];
-          if (code) {
-            document.getElementById("code").value = code;
-          }
-        });
-
-      document
-        .getElementById("clear-btn")
-        .addEventListener("click", function () {
-          document.getElementById("code").value = "";
-        });
-    </script>
-
-    <!-- koala.js must be loaded after Module is declared -->
+    <script src="examples.js"></script>
+    <script src="script.js"></script>
     <script src="koala.js"></script>
   </body>
 </html>
