@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -48,15 +49,21 @@ vector<Token> Lexer::generateTokens() {
     case ';':
       tokens.push_back(Token(TokenType::SEMICOLON, ";", "", line, ++column));
       continue;
-    // TODO: Handle comments
-    case '/':
-      tokens.push_back(Token(TokenType::SLASH, "/", "", line, ++column));
-      continue;
     case '*':
       tokens.push_back(Token(TokenType::STAR, "*", "", line, ++column));
       continue;
 
     // tokens that may be two characters long
+    case '/':
+      if (peek(i) == '/') {
+        while (code[i] != '\n') {
+          i++;
+        }
+        line++;
+      } else {
+        tokens.push_back(Token(TokenType::SLASH, "/", "", ++line, 0));
+      }
+      continue;
     case '!':
       if (peek(i) == '=') {
         tokens.push_back(Token(TokenType::BANG_EQUAL, "!=", "", line, column));
