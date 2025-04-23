@@ -35,6 +35,7 @@ void ErrorReporter::printError(const int line, const int column,
   }
 
   // Print filename if not running in the REPL
+  // TODO: Fix the offset introduced by line numbers > 9
   if (filename != "") {
     cerr << "       --> " << filename << ":" << line << ":" << column << "\n"
          << "       |" << "\n";

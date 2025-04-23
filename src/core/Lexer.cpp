@@ -60,6 +60,27 @@ vector<Token> Lexer::generateTokens() {
           i++;
         }
         line++;
+        column = 0;
+      } else if (peek(i) == '*') {
+        const int commentStartingLine = line;
+        const int commentStartingColumn = column + 1;
+        i += 2; // skip the opening /*
+        while (i < code.size()) {
+          if (code[i] == '\n') {
+            i++;
+            line++;
+          } else if (code[i] == '*' && peek(i) == '/') {
+            i += 2; // skip the closing */
+            break;
+          } else {
+            i++;
+          }
+        }
+        if (i == code.size()) {
+          errorReporter->report(commentStartingLine, commentStartingColumn,
+                                "Unterminated comment: '*/' expected");
+        }
+        line++;
       } else {
         tokens.push_back(Token(TokenType::SLASH, "/", "", ++line, 0));
       }
