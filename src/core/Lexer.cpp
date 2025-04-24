@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -48,15 +49,44 @@ vector<Token> Lexer::generateTokens() {
     case ';':
       tokens.push_back(Token(TokenType::SEMICOLON, ";", "", line, ++column));
       continue;
-    // TODO: Handle comments
-    case '/':
-      tokens.push_back(Token(TokenType::SLASH, "/", "", line, ++column));
-      continue;
     case '*':
       tokens.push_back(Token(TokenType::STAR, "*", "", line, ++column));
       continue;
 
     // tokens that may be two characters long
+    case '/':
+      if (peek(i) == '/') {
+        while (code[i] != '\n') {
+          i++;
+        }
+        line++;
+        column = 0;
+      } else if (peek(i) == '*') {
+        const int commentStartingLine = line;
+        const int commentStartingColumn = column + 1;
+        i += 2; // skip the opening /*
+        while (i < code.size()) {
+          if (code[i] == '\n') {
+            i++;
+            line++;
+            column = 0;
+          } else if (code[i] == '*' && peek(i) == '/') {
+            i++;
+            column += 2;
+            break;
+          } else {
+            i++;
+            column += 1;
+          }
+        }
+        if (i == code.size()) {
+          errorReporter->report(commentStartingLine, commentStartingColumn,
+                                "Unterminated comment: '*/' expected");
+        }
+      } else {
+        tokens.push_back(Token(TokenType::SLASH, "/", "", line, ++column));
+      }
+      continue;
     case '!':
       if (peek(i) == '=') {
         tokens.push_back(Token(TokenType::BANG_EQUAL, "!=", "", line, column));

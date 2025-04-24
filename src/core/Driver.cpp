@@ -57,7 +57,7 @@ void Driver::run(string code, string filename) {
   vector<Token> tokens = lexer->generateTokens();
 
   Parser *parser = new Parser(tokens, errorReporter);
-  vector<Stmt*> *statements = parser->parse();
+  vector<Stmt *> *statements = parser->parse();
 
   if (errorReporter->errorDetected()) {
     return;

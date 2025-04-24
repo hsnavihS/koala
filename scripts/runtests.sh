@@ -13,6 +13,7 @@ for file in tests/*.kol; do
 
   if [ ! -f "$expected" ]; then
     echo -e "${RED}[TEST] Missing output file for ${base}${RESET}"
+    echo ""
     failed=1
     continue
   fi

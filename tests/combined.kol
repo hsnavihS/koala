@@ -1,3 +1,8 @@
+/*
+* Code to display all the functionalities of the language
+* in one single place
+*/
+
 func isPrime(n) {
     if (n <= 1) return false;
     if (n <= 3) return true;
@@ -44,6 +49,7 @@ func fibonacci(n) {
 }
 
 print "";
+// print the first 10 fibonacci numbers
 print "Fibonacci numbers:";
 for (var i = 0; i < 10; i = i + 1) {
     print fibonacci(i);
@@ -55,6 +61,7 @@ func factorial(n) {
 }
 
 print "";
+// print the factorials of the first 10 numbers
 print "Factorials:";
 for (var i = 0; i < 10; i = i + 1) {
     print factorial(i);
