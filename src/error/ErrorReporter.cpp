@@ -43,7 +43,7 @@ void ErrorReporter::printError(const int line, const int column,
 
   // Print the preceding line if we can
   if (canPrintPrecedingLine) {
-    cerr << "     " << line - 1 << " | " << lines[line - 2] << "\033[0m\n";
+    cerr << "     " << line - 1 << " | " << lines[line - 2] << "\n";
   }
 
   // Print the line of code where the error occurred

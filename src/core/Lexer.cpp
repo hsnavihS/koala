@@ -69,20 +69,22 @@ vector<Token> Lexer::generateTokens() {
           if (code[i] == '\n') {
             i++;
             line++;
+            column = 0;
           } else if (code[i] == '*' && peek(i) == '/') {
-            i += 2; // skip the closing */
+            i++;
+            column += 2;
             break;
           } else {
             i++;
+            column += 1;
           }
         }
         if (i == code.size()) {
           errorReporter->report(commentStartingLine, commentStartingColumn,
                                 "Unterminated comment: '*/' expected");
         }
-        line++;
       } else {
-        tokens.push_back(Token(TokenType::SLASH, "/", "", ++line, 0));
+        tokens.push_back(Token(TokenType::SLASH, "/", "", line, ++column));
       }
       continue;
     case '!':
