@@ -2,6 +2,8 @@
 
 Made to learn about compilers and programming languages, Koala is heavily inspired by Bob Nystrom's [Crafting Interpreters](https://craftinginterpreters.com/).
 
+![2025-04-25-163513_hyprshot](https://github.com/user-attachments/assets/bf309295-917a-4d6a-a821-0c1fa8b54acd)
+
 ---
 
 ## Introduction
@@ -21,6 +23,7 @@ The project includes:
 ### Implemented Features
 
 - Arithmetic expressions with operator precedence
+- C-style single and multi-line comments
 - Variable declarations and assignments
 - Block-scoped environments
 - Conditional statements (`if`, `else`)
@@ -43,7 +46,8 @@ The project is far from done, these are some things off the top of my head that 
 - **Support for Object-Oriented Programming** (classes and inheritance)
 
 Currently it's quite jarring to write ```.kol``` files. Since I've been fascinated by LSP, treesitter and related technologies in the past, I'd also like to have:
-- **Integration with Tree-sitter** for better syntax parsing
+- **Integration with Tree-sitter** for syntax highlighting and smart indentation
+    - This is done! You can check it out here: [hsnavihS/tree-sitter-koala](https://github.com/hsnavihS/tree-sitter-koala)
 - **LSP Support** to enable editor features like autocomplete, go-to-definition, error detection etc.
 
 ---
