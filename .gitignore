@@ -1,9 +1,9 @@
-# Ignore the build directory
-build/**
-Build/**
+# Ignore all build directories, even nested ones
+build/
+Build/
 
 # Ignore clangd cache
-.cache/**
+.cache/
 
 # Ignore all object files
 *.out
