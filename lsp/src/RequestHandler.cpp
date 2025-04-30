@@ -9,10 +9,10 @@ RequestHandler::RequestHandler(Logger *logger, Responder *responder)
   this->dispatch_table = {
       {"initialize", std::bind(&RequestHandler::handleInitialize, this,
                                std::placeholders::_1)},
+      {"initialized", std::bind(&RequestHandler::handleInitialized, this,
+                                std::placeholders::_1)},
       {"shutdown",
        std::bind(&RequestHandler::handleShutdown, this, std::placeholders::_1)},
-      {"exit",
-       std::bind(&RequestHandler::handleExit, this, std::placeholders::_1)},
   };
 }
 
@@ -22,11 +22,18 @@ void RequestHandler::handle(const LspMessage &msg) {
     return;
   }
 
+  logger->debug("Handling message with method: " + msg.method);
+
   auto it = dispatch_table.find(msg.method);
   if (it != dispatch_table.end()) {
     it->second(msg);
   } else {
-    logger->err("Unhandled method: " + msg.method);
+    logger->warn("Unhandled method: " + msg.method);
+    // For notifications, we don't need to send an error response
+    if (!msg.is_notification) {
+      // TODO: Send an error
+      return;
+    }
   }
 }
 
@@ -53,15 +60,5 @@ void RequestHandler::handleInitialized(const LspMessage &message) {
 
 void RequestHandler::handleShutdown(const LspMessage &message) {
   this->shutdownReceived = true;
-  responder->sendResult(message.id, nullptr);
-}
-
-void RequestHandler::handleExit(const LspMessage &message) {
-  if (this->shutdownReceived) {
-    logger->info("Shutting down server");
-    exit(0);
-  } else {
-    logger->err("Exit received without shutdown");
-    exit(1);
-  }
+  responder->sendResult(message.id, json());
 }

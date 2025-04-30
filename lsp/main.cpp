@@ -31,6 +31,19 @@ int main() {
       logger->err("Empty message, or failed to parse");
       continue;
     }
+
+    if (message.method == "exit") {
+      break;
+    }
+
     handler->handle(message);
+  }
+
+  if (handler->isShutdownReceived()) {
+    logger->info("Exiting with success");
+    exit(0);
+  } else {
+    logger->err("Exiting with failure");
+    exit(1);
   }
 }

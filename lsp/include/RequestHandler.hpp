@@ -13,6 +13,7 @@ class RequestHandler {
 public:
   RequestHandler(Logger *logger, Responder *responder);
   void handle(const LspMessage &msg);
+  bool isShutdownReceived() const { return shutdownReceived; }
 
 private:
   bool shutdownReceived = false;

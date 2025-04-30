@@ -8,7 +8,7 @@ using namespace std;
 using json = nlohmann::json;
 
 json parse_json(const string &json_str) {
-  json parsed_msg = json::parse(json_str, nullptr, false);
+  json parsed_msg = json::parse(json_str);
   if (parsed_msg.is_discarded()) {
     return json();
   }
@@ -39,11 +39,14 @@ LspMessage Scanner::parseMessage(istream &cin) {
     return {};
   }
 
-  return {
-      parsed_msg["method"],
-      parsed_msg["id"],
-      parsed_msg["params"],
-      parsed_msg,
-      parsed_msg["id"].is_null() ? true : false,
-  };
+  // Try to parse the ID only if the message is not a notification
+  bool is_notification = !parsed_msg.contains("id");
+  int id = -1;
+  if (!is_notification && !parsed_msg["id"].is_null()) {
+    id = parsed_msg["id"].get<int>();
+  }
+
+  return {parsed_msg["method"].get<string>(), id,
+          parsed_msg.contains("params") ? parsed_msg["params"] : json::object(),
+          parsed_msg, is_notification};
 }
