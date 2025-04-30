@@ -27,5 +27,6 @@ private:
   void handleInitialize(const LspMessage &msg);
   void handleInitialized(const LspMessage &msg);
   void handleShutdown(const LspMessage &msg);
-  void handleExit(const LspMessage &msg);
+
+  void handleHover(const LspMessage &msg);
 };

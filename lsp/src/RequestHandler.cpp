@@ -13,6 +13,8 @@ RequestHandler::RequestHandler(Logger *logger, Responder *responder)
                                 std::placeholders::_1)},
       {"shutdown",
        std::bind(&RequestHandler::handleShutdown, this, std::placeholders::_1)},
+      {"textDocument/hover",
+       std::bind(&RequestHandler::handleHover, this, std::placeholders::_1)},
   };
 }
 
@@ -21,8 +23,6 @@ void RequestHandler::handle(const LspMessage &msg) {
     logger->info("Shutdown already received, ignoring message");
     return;
   }
-
-  logger->debug("Handling message with method: " + msg.method);
 
   auto it = dispatch_table.find(msg.method);
   if (it != dispatch_table.end()) {
@@ -42,7 +42,7 @@ void RequestHandler::handleInitialize(const LspMessage &message) {
       {"capabilities",
        {
            {"textDocumentSync", 1},
-           {"hoverProvider", false},
+           {"hoverProvider", true},
            {"definitionProvider", false},
        }},
       {"serverInfo",
@@ -61,4 +61,14 @@ void RequestHandler::handleInitialized(const LspMessage &message) {
 void RequestHandler::handleShutdown(const LspMessage &message) {
   this->shutdownReceived = true;
   responder->sendResult(message.id, json());
+}
+
+void RequestHandler::handleHover(const LspMessage &message) {
+  logger->debug(message.raw_json.dump());
+  json hoverResult = {{"contents",
+                       {
+                           {"kind", "markdown"},
+                           {"value", "Hover information"},
+                       }}};
+  responder->sendResult(message.id, hoverResult);
 }
